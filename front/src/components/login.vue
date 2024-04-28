@@ -1,16 +1,29 @@
 <template>
   <div class="login-container">
     <img :src="loginBG" class="login-bg" alt="Login Background">
-    
-    <div class="login-content">
+
+    <div class="login-content shadow-lg">
       <v-form @submit.prevent="submitForm" class="login-form text-center">
         <img :src="logo" class="logo" alt="Login Background">
-        <v-text-field variant="outlined"  v-model="username" label="Usuario" required></v-text-field>
-        <v-text-field variant="outlined" v-model="password" label="Contraseña" type="password" required></v-text-field>
+        
+        <div class="input-group flex-nowrap">
+          <span class="input-group-text" id="addon-wrapping"><i class="bi bi-person-fill"></i></span>
+          <input type="text" class="form-control"  v-model="username" placeholder="Usuario" aria-label="Username" aria-describedby="addon-wrapping" required>
+        </div>
+        
+        <div class="input-group flex-nowrap mt-3">
+          <span class="input-group-text" id="addon-wrapping"><i class="bi bi-key-fill"></i></span>
+          <input type="password" class="form-control" v-model="password" placeholder="Contraseña" aria-label="Username" aria-describedby="addon-wrapping" required>
+        </div>
 
-        <v-btn :loading="loading" type="submit" block class="mt-2" text="Iniciar Sesion"></v-btn>
+        <button class="btn btn-success mt-5" :loading="loading" type="submit" >
+          Iniciar Sesion
+        </button>
       </v-form>
     </div>
+    <footer class="footer">
+      <p class="text-end me-2">© 2024 TINKU. Todos los derechos reservados.</p>
+    </footer>
   </div>
 </template>
 
@@ -66,10 +79,12 @@ export default {
 <style lang="scss" scoped>
 .login-container {
   height: 100vh;
-  display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+}
+.logo{
+
 }
 
 .login-bg {
@@ -83,13 +98,33 @@ export default {
 }
 
 .login-content {
+  background-color:white;
+  height: 100vh;
   max-width: 400px;
   width: 100%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+}
+.footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 10px;
+  background-color:none;
+  display: flex;
+  align-items: center;
+  justify-content: end;
   z-index: 1;
+  color: white;
+  font-size: 12px;
 }
 
 .login-form {
-  background-color: rgba(255, 255, 255, 0.8);
+
   padding: 20px;
   border-radius: 8px;
   backdrop-filter: blur(5px);
@@ -109,24 +144,24 @@ input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  background-color: transparent;
   border-radius: 4px;
   font-size: 16px;
 }
 
 button {
-  width: 100%;
+  width: 50%;
   padding: 10px;
   margin-top: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
-  background-color: #4CAF50;
+  background-color: #23aca5;
   color: white;
 
   &:hover {
-    background-color: #45a049;
+    background-color: rgb(25, 138, 132);
   }
 
 }
@@ -137,9 +172,11 @@ button[disabled] {
 }
 
 .logo {
-  width: 200px;
-  margin: 30px;
-  margin-bottom: 50px; ;
+  width: 90%;
+  margin-bottom: 20px;
+  position: sticky;
+  
+  ;
 
 }
 </style>
