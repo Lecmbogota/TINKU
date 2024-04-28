@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tinku</title>
 </head>
 <body>
 
-<h1>Tinku</h1>
+![image](https://github.com/Lecmbogota/TINKU/assets/96073778/74ea0ad9-809d-422d-a260-ce8be92d0b20)
+
 
 <p>Tinku es una aplicación web omnicanal que permite la comunicación por medio de bots con IA y atención multiagente.</p>
 
@@ -32,21 +32,11 @@
 
 <p>Proporciona ejemplos o instrucciones sobre cómo usar tu proyecto.</p>
 
-<h2>Contribución</h2>
-
-<p>¡Estamos abiertos a contribuciones! Si tienes ideas para mejorar Tinku, siéntete libre de hacer un fork del repositorio y enviar un pull request.</p>
-
 <h2>Licencia</h2>
 
-<p>Este proyecto está bajo la licencia [nombre de la licencia].</p>
+<p>Este proyecto está bajo la licencia MIT.</p>
 
 <h2>Autor</h2>
-
-<p>Desarrollado por [tu nombre]. Puedes encontrarme en [enlace a tu perfil de GitHub].</p>
-
-<h2>Agradecimientos</h2>
-
-<p>Agradecimientos especiales a [nombre de la persona o equipo] por su apoyo y contribuciones al proyecto.</p>
-
+<p>Desarrollado por Luis Caraballo. Puedes encontrarme en https://github.com/Lecmbogota.</p>
 </body>
 </html>
