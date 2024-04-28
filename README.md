@@ -1,1 +1,1 @@
-# THINKU
+# TINKU
