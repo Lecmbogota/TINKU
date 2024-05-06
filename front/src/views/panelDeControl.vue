@@ -1,6 +1,6 @@
 <template>
   <div class="user-admin-panel">
-    <h2>Administración de Usuarios</h2>
+    <h2>Panel de Usuarios</h2>
     
     <!-- Botón para abrir el modal de creación/edición de usuario -->
     <button class="btn btn-primary mb-4" @click="abrirModal('crear')">Crear Usuario</button>
@@ -20,7 +20,7 @@
           <td>{{ usuario.nombre }}</td>
           <td>
             <button @click="editarUsuario(usuario)" class="btn btn-primary btn-sm mx-2">Editar</button>
-            <button @click="eliminarUsuario(index)" class="btn btn-danger btn-sm">Eliminar</button>
+
           </td>
         </tr>
       </tbody>
@@ -38,6 +38,7 @@
             <!-- Formulario de creación/edición de usuario -->
             <form @submit.prevent="modoModal === 'crear' ? registrarUsuario() : guardarCambiosUsuario()">
               <div class="mb-3">
+
                 <label for="nombre" class="form-label">Nombre:</label>
                 <input type="text" id="nombre" v-model="nuevoUsuario.nombre" class="form-control" required>
               </div>
@@ -122,6 +123,7 @@ export default {
       if (success) {
         // Usuario registrado exitosamente
         console.log('Usuario registrado:', user);
+        this.getAllUsuarios();
         // Realizar otras acciones, como redireccionar al usuario a otra página
       } else {
         // Error al registrar usuario
@@ -172,7 +174,7 @@ export default {
 <style scoped>
 /* Estilos específicos del componente */
 .user-admin-panel {
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
 }
 .modal.show {
