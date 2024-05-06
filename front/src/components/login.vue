@@ -16,7 +16,7 @@
           <input type="password" class="form-control" v-model="password" placeholder="Contraseña" aria-label="Username" aria-describedby="addon-wrapping" required>
         </div>
 
-        <button class="btn btn-success mt-5" :loading="loading" type="submit" >
+        <button class="btn btn-success mt-5" :loading="loading" @click="submitForm" type="submit" >
           Iniciar Sesion
         </button>
       </v-form>
@@ -60,10 +60,11 @@ export default {
       }
     },
     handleResponse(response) {
+      console.log(response)
       if (response.hasOwnProperty('user') && response.hasOwnProperty('token')) {
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
-        this.$router.push('/dashboard');
+        this.$router.push('/homeAdmin');
         this.$toast.success('Login successful!');
       } else if (response.hasOwnProperty('error')) {
         this.$toast.error(response.error);

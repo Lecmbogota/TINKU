@@ -19,7 +19,7 @@ const SECRET_KEY = process.env.SECRET_KEY || "TuCadenaSecreta";
 
 // Configuración de CORS
 const corsOptions = {
-  origin: ["*"],
+  origin: ["http://localhost:9000"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -128,7 +128,7 @@ app.post("/api/login", async (req, res) => {
 
     // Genera un token JWT para el usuario autenticado
     const token = jwt.sign(
-      { usuario: user.usuario, rol_id: user.rol_id },
+      { usuario: user.usuario, nombre: user.nombre , rol_id: user.rol_id },
       SECRET_KEY,
       { expiresIn: "1h" }
     );
@@ -414,41 +414,34 @@ app.put("/api/user/:id", async (req, res) => {
   }
 });
 
-// Ruta para eliminar un usuario (sin JWT)
-app.delete("/api/user/:id", async (req, res) => {
+
+
+// Ruta para obtener el nombre del usuario
+app.get("/api/get_nombre/:id", async (req, res) => {
   try {
     const userId = parseInt(req.params.id, 10);
 
-    // Verifica si el usuario que intenta eliminar existe
-    const userToDelete = await db.query(
-      "SELECT * FROM usuarios WHERE id = $1",
-      [userId]
-    );
-
-    if (userToDelete.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Usuario no encontrado" });
-    }
-
-    // Realiza la eliminación del usuario
+    // Verifica si el usuario que intenta obtener existe
     const result = await db.query(
-      "DELETE FROM usuarios WHERE id = $1 RETURNING *",
+      "SELECT nombre FROM usuarios WHERE id = $1",
       [userId]
     );
 
-    res.json({
-      success: true,
-      message: "Usuario eliminado correctamente",
-      user: result.rows[0],
-    });
+    // Verifica si se encontró un usuario con el ID proporcionado
+    if (result.rows.length > 0) {
+      res.status(200).json({ success: true, nombre: result.rows[0].nombre });
+    } else {
+      res.status(404).json({ success: false, message: "Usuario no encontrado" });
+    }
   } catch (error) {
-    console.error("Error al eliminar usuario:", error);
+    console.error("Error al obtener nombre de usuario:", error);
     res
       .status(500)
       .json({ success: false, message: "Error interno del servidor" });
   }
 });
+
+
 
 // Middleware para verificar el token JWT
 app.get("/api/data", authenticateJWT, (req, res) => {

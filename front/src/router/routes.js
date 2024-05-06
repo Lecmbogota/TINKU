@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../components/login.vue';
-import Dashboard from '../components/dashboard.vue';
-
-// Importa jwt-decode directamente desde el CDN
-import jwtDecode from 'https://cdn.skypack.dev/jwt-decode';
+import HomeAdmin from '../views/admin/homeAdmin.vue';
+import HomeAgent from '../views/agent/homeAgent.vue';
 
 const routes = [
   { 
@@ -13,14 +11,21 @@ const routes = [
     component: Login 
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    meta: { requiresAuth: true },
-    component: Dashboard
+    path: '/homeAdmin',
+    name: 'homeAdmin',
+    meta: { requiresAuth: true, role: 1 },
+    component: HomeAdmin
   },
   {
+    path: '/homeAgent',
+    name: 'homeAgent',
+    meta: { requiresAuth: true, role: 2 },
+    component: HomeAgent
+  },
+  {
+    // Esta ruta manejará cualquier otra ruta no definida
     path: '/:pathMatch(.*)*',
-    redirect: '/dashboard'
+    redirect: { name: 'login' } // Redirige a la ruta de login
   }
 ];
 
@@ -29,29 +34,28 @@ const router = createRouter({
   routes,
 });
 
-function isTokenExpired(token) {
-  if (!token) {
-    return true;
-  }
-
-  const decodedToken = jwtDecode(token); // Corregir aquí
-
-  if (!decodedToken || !decodedToken.exp) {
-    return true;
-  }
-
-  const expirationDate = new Date(decodedToken.exp * 1000);
-
-  return expirationDate < new Date();
-}
-
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !localStorage.getItem('token')) {
-    // Redirige a la página de inicio de sesión si la ruta requiere autenticación y no hay token
-    next({ name: '/' });
-  } else {
-    next();
+  const token = localStorage.getItem('token');
+
+  // Verificamos si la ruta requiere autenticación
+  if (to.meta.requiresAuth) {
+    if (!token) {
+      // Si no hay token, redirigimos al inicio de sesión
+      return next({ name: 'login' });
+    }
+    // Decodificamos el token para obtener la información del usuario
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const userRole = decodedToken.rol_id;
+
+    // Verificamos si el rol del usuario coincide con el requerido para la ruta
+    if (userRole !== to.meta.role) {
+      // Si no coincide, redirigimos al usuario a la página correspondiente a su rol
+      return next({ name: userRole === 1 ? 'homeAdmin' : 'homeAgent' });
+    }
   }
+
+  // Si la ruta no requiere autenticación o el usuario tiene permiso para acceder a ella, continuamos
+  next();
 });
 
 export default router;
