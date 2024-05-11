@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //const BASE_URL = 'http://localhost:3000'; // Reemplaza con la URL de tu servidor
-const BASE_URL = 'webhook.caraballo.pro/'; // Reemplaza con la URL de tu servidor
+const BASE_URL = 'https://webhook.caraballo.pro'; // Reemplaza con la URL de tu servidor
 const api = axios.create({ baseURL: BASE_URL });
 
 export const login = async (username, password) => {
