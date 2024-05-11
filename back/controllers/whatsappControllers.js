@@ -28,8 +28,6 @@ const receivedMessage = (req, res) => {
   } catch (error) {
     res.send("EVENT_RECEIVED");
   }
-
-  res.send("hola Received");
 };
 
 module.exports = { verifyToken, receivedMessage };
