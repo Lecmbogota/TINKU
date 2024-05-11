@@ -7,6 +7,7 @@ const logsFileStream = fs.createWriteStream("./logs.txt");
 const myConsole = new console.Console(logsFileStream);
 
 const whatsappService = require("../services/whatsappService");
+const samples = require("../shared/sampleModels")
 
 const verifyToken = (req, res) => {
   try {
@@ -41,7 +42,15 @@ const receivedMessage = (req, res) => {
       const text = GetTextUser(messages);
       myConsole.log("Mensaje: ", text);
 
-      whatsappService.SendMessageWhatsapp("El usuario dijo: " + text, number);
+      if(text === "image"){
+        var data = samples.SampleImage(number)
+        whatsappService.SendMessageWhatsapp(data);
+      }
+
+      else if(text === "text"){
+        var data = samples.SampleText(text, number)
+        whatsappService.SendMessageWhatsapp(data);
+      }
     }
 
     res.send("EVENT_RECEIVED");
