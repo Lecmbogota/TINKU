@@ -1,4 +1,5 @@
 const express = require("express");
+const apiRoutes = require("./routes/routes");
 const http = require("http");
 const WebSocket = require("ws");
 const helmet = require("helmet");
@@ -504,6 +505,8 @@ app.get("/api/verifyToken", authenticateJWT, (req, res) => {
   }
 });
 
+
+app.use("/whatsapp", apiRoutes)
 // Inicia el servidor
 server.listen(PORT, () => {
   console.log(`Servidor Express en http://localhost:${PORT}`);

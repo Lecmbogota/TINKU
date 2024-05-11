@@ -71,7 +71,7 @@
         </div>
       </div>
       <!-- Columna de pestañas -->
-      <div class="col m-0 p-0 elevation-4">
+      <div class="col-3 m-0 p-0 elevation-4">
 
         <v-tabs v-model="tab" bg-color="primary">
           <v-tab value="Contacto"> <i class="bi bi-person-vcard-fill me-1"></i> Contacto</v-tab>
