@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 create_tables.sql
-
+.env
 **docs
 **node_modules
 dist
