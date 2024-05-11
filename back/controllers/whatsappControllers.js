@@ -45,7 +45,7 @@ const receivedMessage = (req, res) => {
       myConsole.log("Mensaje: ", text);
 
       if(text !== ""){
-        receivedMessages.push({ number, text })
+        receivedMessages.push({ number: number, text: text })
         processMessage.Process(text, number)
       }
     }
@@ -57,7 +57,6 @@ const receivedMessage = (req, res) => {
   }
 };
 
-// Función para obtener los mensajes recibidos
 const getReceivedMessages = (req, res) => {
   try {
     res.json({ messages: receivedMessages });
