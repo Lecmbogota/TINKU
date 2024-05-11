@@ -1,3 +1,8 @@
 .bi-power:hover {
-    color: red;
-  }
+  color: red;
+}
+
+.no-focus-outline {
+  border: none;
+  background-color: #49505700;
+}

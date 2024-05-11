@@ -12,7 +12,10 @@
 
           </li>
           <li class="nav-item">
-            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'">Administracion</a>
+            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'"> <strong>Admin</strong>Panel</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'chat' }" href="#" @click="tab = 'chat'"> <strong>chat</strong></a>
           </li>
         </ul>
         <div class="nav-item">
@@ -27,8 +30,9 @@
       </div>
     </nav>
     <router-view>
-      <Panel v-if="tab === 'Panel'"></Panel>
-      <usersAdmin v-if="tab === 'Users'"></usersAdmin>
+      <Panel v-show="tab === 'Panel'"></Panel>
+      <administracion v-show="tab === 'Users'"></administracion>
+      <chat v-show="tab === 'chat'"></chat>
     </router-view>
 
   </div>
@@ -40,7 +44,8 @@ import router from '../../router/routes';
 import logo from '../../assets/img/logo2.jpg';
 import isotipo from '../../assets/img/isotipo.jpg';
 import Panel from '@/views/panelDeControl.vue';
-import usersAdmin from '@/views/adminUsers.vue'
+import chat from '@/views/chat.vue';
+import administracion from '@/views/administracion.vue'
 
 export default {
   data() {
@@ -57,7 +62,8 @@ export default {
   // Cambiado de component a components
   components: {
     Panel,
-    usersAdmin
+    administracion,
+    chat
   },
   methods: {
     salir() {
@@ -78,6 +84,7 @@ export default {
       try {
         const token = localStorage.getItem('token');
         const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        console.log(decodedToken)
         this.nombreUsuario = decodedToken.nombre;
       } catch (error) {
         console.error('Error al obtener el nombre del usuario:', error);

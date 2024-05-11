@@ -5,18 +5,20 @@
     <div class="login-content shadow-lg">
       <v-form @submit.prevent="submitForm" class="login-form text-center">
         <img :src="logo" class="logo" alt="Login Background">
-        
+
         <div class="input-group flex-nowrap">
           <span class="input-group-text" id="addon-wrapping"><i class="bi bi-person-fill"></i></span>
-          <input type="text" class="form-control"  v-model="username" placeholder="Usuario" aria-label="Username" aria-describedby="addon-wrapping" required>
-        </div>
-        
-        <div class="input-group flex-nowrap mt-3">
-          <span class="input-group-text" id="addon-wrapping"><i class="bi bi-key-fill"></i></span>
-          <input type="password" class="form-control" v-model="password" placeholder="Contraseña" aria-label="Username" aria-describedby="addon-wrapping" required>
+          <input type="text" class="form-control" v-model="username" placeholder="Usuario" aria-label="Username"
+            aria-describedby="addon-wrapping" required>
         </div>
 
-        <button class="btn btn-success mt-5" :loading="loading" @click="submitForm" type="submit" >
+        <div class="input-group flex-nowrap mt-3">
+          <span class="input-group-text" id="addon-wrapping"><i class="bi bi-key-fill"></i></span>
+          <input type="password" class="form-control" v-model="password" placeholder="Contraseña" aria-label="Username"
+            aria-describedby="addon-wrapping" required>
+        </div>
+
+        <button class="btn btn-success mt-5" :loading="loading" @click="submitForm" type="submit">
           Iniciar Sesion
         </button>
       </v-form>
@@ -59,6 +61,7 @@ export default {
         this.loading = false;
       }
     },
+
     handleResponse(response) {
       console.log(response)
       if (response.hasOwnProperty('user') && response.hasOwnProperty('token')) {
@@ -84,9 +87,8 @@ export default {
   justify-content: center;
   position: relative;
 }
-.logo{
 
-}
+.logo {}
 
 .login-bg {
   width: 100%;
@@ -99,7 +101,7 @@ export default {
 }
 
 .login-content {
-  background-color:white;
+  background-color: white;
   height: 100vh;
   max-width: 400px;
   width: 100%;
@@ -110,12 +112,13 @@ export default {
   position: relative;
 
 }
-.footer{
+
+.footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 10px;
-  background-color:none;
+  background-color: none;
   display: flex;
   align-items: center;
   justify-content: end;
@@ -176,7 +179,7 @@ button[disabled] {
   width: 90%;
   margin-bottom: 20px;
   position: sticky;
-  
+
   ;
 
 }

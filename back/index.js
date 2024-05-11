@@ -19,7 +19,7 @@ const SECRET_KEY = process.env.SECRET_KEY || "TuCadenaSecreta";
 
 // Configuración de CORS
 const corsOptions = {
-  origin: ["http://localhost:9000"],
+  origin: ["http://localhost:9000","http://201.244.109.231:9000"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,

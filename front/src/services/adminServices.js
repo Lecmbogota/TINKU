@@ -51,13 +51,14 @@ export async function getAllUsers() {
 }
 
 // Función para actualizar la información de un usuario
-export async function updateUser(userId, { nombre, usuario, contrasena, rol_id }) {
+export async function updateUser(userId, { nombre, usuario, contrasena, rol_id, activo }) {
   try {
     const response = await api.put(`/api/user/${userId}`, {
       nombre,
       usuario,
       contrasena,
-      rol_id
+      rol_id,
+      activo
     });
     return response.data.user;
   } catch (error) {
@@ -65,3 +66,16 @@ export async function updateUser(userId, { nombre, usuario, contrasena, rol_id }
     throw new Error('Error al actualizar información de usuario');
   }
 }
+
+export async function updateUserActivo(userId, { activo }) {
+  try {
+    const response = await api.put(`/api/userActivo/${userId}`, {
+      activo
+    });
+    return response.data.user;
+  } catch (error) {
+    console.error('Error al actualizar información de usuario:', error);
+    throw new Error('Error al actualizar información de usuario');
+  }
+}
+
