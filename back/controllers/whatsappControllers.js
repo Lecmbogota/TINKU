@@ -46,7 +46,9 @@ const receivedMessage = (req, res) => {
 
       if(text !== ""){
         receivedMessages.push({ number: number, text: text })
+
         processMessage.Process(text, number)
+        myConsole.log(getReceivedMessages())
       }
     }
 
