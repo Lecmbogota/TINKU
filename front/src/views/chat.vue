@@ -148,24 +148,7 @@ export default {
       tab: null,
       firstname: '',
       lastname: '',
-      contacts: [
-        {
-          id: 1, name: "Luis Caraballo", messages: [
-            { text: "Hola", sentByMe: false },
-            { text: "Hola, ¿cómo estás?", sentByMe: true },
-            { text: "Bien, gracias", sentByMe: false }
-          ]
-        },
-        { id: 2, name: "Adriana Arias", messages: [] },
-        {
-          id: 3, name: "Maria Caraballo", messages: [
-            { text: "Hola", sentByMe: false },
-            { text: "Hola, ¿cómo estás?", sentByMe: true },
-            { text: "Bien, gracias", sentByMe: false }
-          ]
-        },
-        // Agrega más contactos según sea necesario
-      ],
+      contacts: [],
       currentContact: null,
       newMessage: ''
     };
@@ -175,6 +158,9 @@ export default {
       // Limitar el número de filas a un máximo de 5
       return Math.min(5, (this.newMessage.match(/\n/g) || []).length + 1);
     }
+  },
+  created(){
+    this.getAllMsg()
   },
   methods: {
     adjustTextAreaHeight() {
