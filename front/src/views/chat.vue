@@ -141,6 +141,7 @@
 </template>
 
 <script>
+import { getmsg } from '../services/agentServices';
 export default {
   data() {
     return {
@@ -195,6 +196,15 @@ export default {
         }
       } else {
         return 'No hay mensajes';
+      }
+    },
+    async getAllMsg() {
+      try {
+        const MSG = await getmsg();
+        this.contacts = MSG;
+        
+      } catch (error) {
+        console.error('Error al obtener usuarios:', error);
       }
     },
     sendMessage() {
