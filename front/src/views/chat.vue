@@ -189,7 +189,7 @@ export default {
     async getAllMsg() {
       try {
         const MSG = await getmsg();
-        this.contacts = [MSG];
+        this.contacts = MSG;
         
       } catch (error) {
         console.error('Error al obtener usuarios:', error);
