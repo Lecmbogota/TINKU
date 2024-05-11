@@ -7,7 +7,7 @@
         <hr class="m-0">
         <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
           :class="{ 'active': contact === currentContact }" class="contact">
-          <div class="avatar">{{ contact.name?.charAt(0) }}</div>
+          <div class="avatar">{{ contact.name.charAt(0) }}</div>
           <div class="contact-details">
             <div class="row">
               <div class="col-12 ">
@@ -34,7 +34,7 @@
           <div v-if="currentContact" class="chat-header">
             <div class="row d-flex align-items-center">
               <div class="col-auto m-0 p-0">
-                <div class="avatar-2">{{ currentContact.name?.charAt(0) }}</div>
+                <div class="avatar-2">{{ currentContact.name.charAt(0) }}</div>
               </div>
               <div class="col m-0 p-0">
                 <h4>{{ currentContact.name }}</h4>
@@ -86,7 +86,7 @@
                 
                 <div class="row m-0 p-0">
                   <div class="col-12 d-flex justify-content-center">
-                    <div class="avatar-3">{{ currentContact.name?.charAt(0) }}</div>
+                    <div class="avatar-3">{{ currentContact.name.charAt(0) }}</div>
                   </div>
                 </div>
                 <div class="row m-0 p-0">
@@ -141,14 +141,30 @@
 </template>
 
 <script>
-import { getmsg } from '../services/agentServices';
 export default {
   data() {
     return {
       tab: null,
       firstname: '',
       lastname: '',
-      contacts: [],
+      contacts: [
+        {
+          id: 1, name: "Luis Caraballo", messages: [
+            { text: "Hola", sentByMe: false },
+            { text: "Hola, ¿cómo estás?", sentByMe: true },
+            { text: "Bien, gracias", sentByMe: false }
+          ]
+        },
+        { id: 2, name: "Adriana Arias", messages: [] },
+        {
+          id: 3, name: "Maria Caraballo", messages: [
+            { text: "Hola", sentByMe: false },
+            { text: "Hola, ¿cómo estás?", sentByMe: true },
+            { text: "Bien, gracias", sentByMe: false }
+          ]
+        },
+        // Agrega más contactos según sea necesario
+      ],
       currentContact: null,
       newMessage: ''
     };
@@ -159,24 +175,7 @@ export default {
       return Math.min(5, (this.newMessage.match(/\n/g) || []).length + 1);
     }
   },
-  created() {
-    this.getAllMsg();
-  },
   methods: {
-
-    async getAllMsg() {
-      try {
-        const MSG = await getmsg();
-        this.contacts = MSG;
-        // Seleccionar el primer contacto si hay alguno
-        if (this.contacts.length > 0) {
-          this.currentContact = this.contacts[0];
-          // Obtener los mensajes del historial del primer contacto
-        }
-      } catch (error) {
-        console.error('Error al obtener usuarios:', error);
-      }
-    },
     adjustTextAreaHeight() {
       // Ajustar automáticamente la altura del textarea en función del contenido
       const textarea = this.$refs.textarea;
