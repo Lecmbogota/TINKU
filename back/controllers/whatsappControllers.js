@@ -6,6 +6,7 @@ const logsFileStream = fs.createWriteStream("./logs.txt");
 // Crear una instancia de Console con el flujo de escritura hacia el archivo
 const myConsole = new console.Console(logsFileStream);
 
+const whatsappService = require("../services/whatsappService")
 const verifyToken = (req, res) => {
   try {
     var accessToken = "960782506041989";
@@ -28,11 +29,17 @@ const receivedMessage = (req, res) => {
     var changes = entry["changes"][0];
     var value = changes["value"];
     var messageObject = value["messages"];
+    
     if (typeof messageObject !== "undefined") {
       var messages = messageObject[0];
       var text = GetTextUser(messages);
+      var number = messages["from"]
       myConsole.log("Mensaje: ", text);
+
+      whatsappService.SendMessageWhatsapp("el usuario dijo : " + text, number);
+
     }
+
     res.send("EVENT_RECEIVED");
   } catch (error) {
     res.send("EVENT_RECEIVED");
