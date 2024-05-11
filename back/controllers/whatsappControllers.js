@@ -1,4 +1,8 @@
 const fs = require("fs");
+const WebSocket = require("ws");
+// Crear un nuevo servidor de WebSocket
+const wss = new WebSocket.Server({ port: 8080 });
+// Función para enviar mensajes a todos los clientes conectados
 
 // Crear un archivo de texto
 const logsFileStream = fs.createWriteStream("./logs.txt");
@@ -11,6 +15,13 @@ const processMessage = require("../shared/processMessage");
 // Variable para almacenar los mensajes recibidos
 let receivedMessages = [];
 
+const broadcastMessage = (message) => {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(message));
+    }
+  });
+};
 const verifyToken = (req, res) => {
   try {
     const accessToken = "960782506041989";
@@ -84,6 +95,16 @@ function GetTextUser(messages) {
     }
   }
   return text;
-}
+};
+// Manejar conexiones de WebSocket
+wss.on("connection", (ws) => {
+  // Envía los mensajes recibidos al cliente cuando se conecta
+  ws.send(JSON.stringify({ type: "messages", data: receivedMessages }));
+
+  // Manejar mensajes enviados por el cliente (opcional)
+  ws.on("message", (message) => {
+    // Lógica para manejar mensajes enviados por el cliente, si es necesario
+  });
+});
 
 module.exports = { verifyToken, receivedMessage, getReceivedMessages };
