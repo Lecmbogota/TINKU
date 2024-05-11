@@ -149,6 +149,7 @@ export default {
       firstname: '',
       lastname: '',
       contacts: [],
+      contactss: [],
       currentContact: null,
       newMessage: ''
     };
@@ -187,7 +188,11 @@ export default {
     async getAllMsg() {
       try {
         const MSG = await getmsg();
-        this.contacts = MSG;
+        this.contactss = MSG;
+
+        console.log("mensajessssss contacts : ",  this.contactss)
+        console.log("mensajessssss: ", MSG)
+        return MSG
         
       } catch (error) {
         console.error('Error al obtener usuarios:', error);
