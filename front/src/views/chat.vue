@@ -7,7 +7,7 @@
         <hr class="m-0">
         <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
           :class="{ 'active': contact === currentContact }" class="contact">
-          <div class="avatar">{{ contact.name.charAt(0) }}</div>
+          <div class="avatar">{{ contact.name?.charAt(0) }}</div>
           <div class="contact-details">
             <div class="row">
               <div class="col-12 ">
@@ -35,7 +35,7 @@
           <div v-if="currentContact" class="chat-header">
             <div class="row d-flex align-items-center">
               <div class="col-auto m-0 p-0">
-                <div class="avatar-2">{{ currentContact.name.charAt(0) }}</div>
+                <div class="avatar-2">{{ currentContact?.name?.charAt(0) }}</div>
               </div>
               <div class="col m-0 p-0">
                 <h4>{{ currentContact.name }}</h4>
