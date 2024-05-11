@@ -1,5 +1,10 @@
 const fs = require("fs");
-const myConsole = new console.Console(fs.createReadStream("./logs.txt"));
+
+// Crear un archivo de texto
+const logsFileStream = fs.createWriteStream("./logs.txt");
+
+// Crear una instancia de Console con el flujo de escritura hacia el archivo
+const myConsole = new console.Console(logsFileStream);
 
 const verifyToken = (req, res) => {
   try {
@@ -20,7 +25,7 @@ const verifyToken = (req, res) => {
 const receivedMessage = (req, res) => {
   try {
     var entry = req.body["entry"][0];
-    var changes = req.body["changes"][0];
+    var changes = (entry["changes"])[0];
     var value = changes["value"];
     var messageObject = value["messages"];
     myConsole.log(messageObject);
