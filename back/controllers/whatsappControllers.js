@@ -5,7 +5,9 @@ const logsFileStream = fs.createWriteStream("./logs.txt");
 
 // Crear una instancia de Console con el flujo de escritura hacia el archivo
 const myConsole = new console.Console(logsFileStream);
+
 const processMessage = require("../shared/processMessage");
+
 const verifyToken = (req, res) => {
   try {
     const accessToken = "960782506041989";
@@ -40,7 +42,7 @@ const receivedMessage = (req, res) => {
       myConsole.log("Mensaje: ", text);
 
       if(text !== ""){
-        processMessage.process(text, number)
+        processMessage.Process(text, number)
       }
     }
 
