@@ -1,11 +1,11 @@
 const https = require("https");
 
-function SendMessageWhatsapp(data) {
+function SendMessageWhatsapp(model) {
   const options = {
     host: "graph.facebook.com",
     path: "/v18.0/117778997940747/messages",
     method: "POST",
-    body: data,
+    body: model,
     headers: {
       "Content-Type": "application/json",
       Authorization:

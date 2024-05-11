@@ -15,7 +15,8 @@
               </div>
               <div class="col-12 d-flex justify-content-start align-items-center ">
                 <!--<i class="bi bi-check text-grey-lighten-1 me-1"></i><a style="font-size: 14px;">{{getLastMessage(contact) }}</a>-->
-                <i class="bi bi-check-all text-green-lighten-1 me-1"></i><a style="font-size: 14px;">{{getLastMessage(contact) }}</a>
+                <i class="bi bi-check-all text-green-lighten-1 me-1"></i><a style="font-size: 14px;">{{
+                  getLastMessage(contact) }}</a>
               </div>
               <div class="col-12 d-flex justify-content-end align-items-end ">
                 <a style="font-size: 10px; margin-right: 8px; margin-top: -3px;"><strong>Última vez: </strong>20:33</a>
@@ -39,7 +40,7 @@
               <div class="col m-0 p-0">
                 <h4>{{ currentContact.name }}</h4>
               </div>
-              
+
             </div>
           </div>
           <div v-if="currentContact" class="chat-history">
@@ -62,7 +63,8 @@
                 <button class="btn btn-sm bg-grey-lighten-2"><i class="bi bi-paperclip"></i></button>
               </div>
               <div class="col-6 d-flex justify-content-end">
-                <button @click="sendMessage" class="btn btn-sm btn-primary"><i class="bi bi-send me-1"></i>Enviar</button>
+                <button @click="sendMessage" class="btn btn-sm btn-primary"><i
+                    class="bi bi-send me-1"></i>Enviar</button>
               </div>
             </div>
 
@@ -83,7 +85,7 @@
           <v-tabs-window v-model="tab" class="m-0 p-0">
             <v-tabs-window-item value="Contacto">
               <div v-if="currentContact" class="chat-header">
-                
+
                 <div class="row m-0 p-0">
                   <div class="col-12 d-flex justify-content-center">
                     <div class="avatar-3">{{ currentContact.name.charAt(0) }}</div>
@@ -94,9 +96,9 @@
                     <h4>{{ currentContact.name }}</h4>
                   </div>
                 </div>
-                
-                  
-                
+
+
+
               </div>
             </v-tabs-window-item>
 
@@ -121,11 +123,11 @@
                   <div class="row m-0 p-0">
                     <div class="col-12 d-flex justify-content-end">
                       <v-col cols="12" md="4" sm="6" class="">
-                        <v-btn rounded="xl"  class="bg-light-green-accent-2 "> Resolver </v-btn>
+                        <v-btn rounded="xl" class="bg-light-green-accent-2 "> Resolver </v-btn>
                       </v-col>
                     </div>
                   </div>
-                  
+
 
 
                 </v-container>
@@ -175,6 +177,14 @@ export default {
       return Math.min(5, (this.newMessage.match(/\n/g) || []).length + 1);
     }
   },
+  created() {
+  // Simplemente para fines de demostración, obtén los mensajes del primer contacto al cargar la página
+  if (this.contacts.length > 0) {
+    this.currentContact = this.contacts[0];
+  }
+  // Obtener los mensajes del historial del contacto actual desde el back-end
+  this.fetchMessages();
+},
   methods: {
     adjustTextAreaHeight() {
       // Ajustar automáticamente la altura del textarea en función del contenido
@@ -197,12 +207,51 @@ export default {
         return 'No hay mensajes';
       }
     },
-    sendMessage() {
+    /*sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         this.currentContact.messages.push({ text: this.newMessage, sentByMe: true });
         this.newMessage = '';
       }
+    }*/
+    sendMessage() {
+      if (this.newMessage.trim() !== '' && this.currentContact) {
+        // Enviar el mensaje al back-end
+        fetch('/whatsapp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contactId: this.currentContact.id,
+            text: this.newMessage,
+          }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            // Actualizar el historial de mensajes del contacto actual
+            this.currentContact.messages.push({ text: data.text, sentByMe: true });
+            // Limpiar el cuadro de texto
+            this.newMessage = '';
+          })
+          .catch(error => {
+            console.error('Error al enviar el mensaje:', error);
+          });
+      }
+    },
+    fetchMessages() {
+      if (this.currentContact) {
+        fetch(`/api/messages/${this.currentContact.id}`)
+          .then(response => response.json())
+          .then(data => {
+            // Actualizar el historial de mensajes del contacto actual con los mensajes recibidos del back-end
+            this.currentContact.messages = data.messages;
+          })
+          .catch(error => {
+            console.error('Error al obtener los mensajes:', error);
+          });
+      }
     }
+
   }
 };
 </script>
@@ -267,6 +316,7 @@ export default {
   font-size: 20px;
   margin-right: 5px;
 }
+
 .avatar-2 {
   width: 30px;
   height: 30px;
@@ -279,6 +329,7 @@ export default {
   font-size: 20px;
   margin-right: 5px;
 }
+
 .avatar-3 {
   width: 80px;
   height: 80px;
