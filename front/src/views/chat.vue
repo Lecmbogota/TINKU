@@ -143,30 +143,14 @@
 </template>
 
 <script>
+import { getmsg } from '../services/agentServices';
 export default {
   data() {
     return {
       tab: null,
       firstname: '',
       lastname: '',
-      contacts: [
-        {
-          id: 573196233749, name: "Luis Caraballo",phone: "573196233749", messages: [
-            { text: "Hola", sentByMe: false },
-            { text: "Hola, ¿cómo estás?", sentByMe: true },
-            { text: "Bien, gracias", sentByMe: false }
-          ]
-        },
-        { id: 2, name: "Adriana Arias",phone: "573196233749", messages: [] },
-        {
-          id: 3, name: "Maria Caraballo",phone: "573196233749", messages: [
-            { text: "Hola", sentByMe: false },
-            { text: "Hola, ¿cómo estás?", sentByMe: true },
-            { text: "Bien, gracias", sentByMe: false }
-          ]
-        },
-        // Agrega más contactos según sea necesario
-      ],
+      contacts: [],
       currentContact: null,
       newMessage: ''
     };
@@ -184,8 +168,18 @@ export default {
   }
   // Obtener los mensajes del historial del contacto actual desde el back-end
   this.fetchMessages();
+  this.getAllMsg();
 },
   methods: {
+    async getAllMsg() {
+      try {
+        const MSG = await getmsg();
+        this.contacts = MSG;
+      } catch (error) {
+        console.error('Error al obtener usuarios:', error);
+      }
+    },
+
     adjustTextAreaHeight() {
       // Ajustar automáticamente la altura del textarea en función del contenido
       const textarea = this.$refs.textarea;
