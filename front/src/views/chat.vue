@@ -190,7 +190,7 @@ export default {
       this.currentContact = contact;
     },
     getLastMessage(contact) {
-      const lastMessage = contact.messages[contact.messages?.length - 1];
+      const lastMessage = contact.messages && contact.messages.length > 0 ? contact.messages[contact.messages.length - 1] : null;
       if (lastMessage) {
         if (lastMessage.text.length > 15) {
           return lastMessage.text.substring(0, 15) + ' ...'; // Agregar "..." si supera las 15 letras
