@@ -1,73 +1,65 @@
 const fs = require("fs");
+const myConsole = require("./path/to/your/console"); // Importa tu instancia de Console
 
-// Crear un archivo de texto
-const logsFileStream = fs.createWriteStream("./logs.txt");
+const whatsappService = require("../services/whatsappService");
 
-// Crear una instancia de Console con el flujo de escritura hacia el archivo
-const myConsole = new console.Console(logsFileStream);
-
-const whatsappService = require("../services/whatsappService")
 const verifyToken = (req, res) => {
   try {
-    var accessToken = "960782506041989";
-    var token = req.query["hub.verify_token"];
-    var challenge = req.query["hub.challenge"];
+    const accessToken = "960782506041989";
+    const token = req.query["hub.verify_token"];
+    const challenge = req.query["hub.challenge"];
 
     if (challenge != null && token != null && token == accessToken) {
       res.send(challenge);
     } else {
       res.status(400).send();
     }
-  } catch {
+  } catch (error) {
+    console.error("Error en la verificación del token:", error);
     res.status(400).send();
   }
 };
 
 const receivedMessage = (req, res) => {
   try {
-    var entry = req.body["entry"][0];
-    var changes = entry["changes"][0];
-    var value = changes["value"];
-    var messageObject = value["messages"];
+    const entry = req.body["entry"][0];
+    const changes = entry["changes"][0];
+    const value = changes["value"];
+    const messageObject = value["messages"];
     
-    if (typeof messageObject !== "undefined") {
-      var messages = messageObject[0];
+    if (messageObject && messageObject.length > 0) {
+      const messages = messageObject[0];
       
-      var number = messages["from"];
+      const number = messages["from"];
       myConsole.log("Numero: ", number);
 
-      var text = GetTextUser(messages);
+      const text = GetTextUser(messages);
       myConsole.log("Mensaje: ", text);
 
-      whatsappService.SendMessageWhatsapp("el usuario dijo : " + text, number);
-
+      whatsappService.SendMessageWhatsapp("El usuario dijo: " + text, number);
     }
 
     res.send("EVENT_RECEIVED");
   } catch (error) {
-    res.send("EVENT_RECEIVED");
+    console.error("Error en el manejo del mensaje:", error);
+    res.status(500).send("Error en el servidor");
   }
 };
 
 function GetTextUser(messages) {
-  var text = "";
-  var typeMessage = messages["type"];
-  if (typeMessage == "text") {
+  let text = "";
+  const typeMessage = messages["type"];
+  if (typeMessage === "text") {
     text = messages["text"]["body"];
-  } else if (typeMessage == "interactive") {
-    var interactiveObject = messages["interactive"];
-    var typeInteractive = interactiveObject["type"];
-    myConsole.log(interactiveObject);
-
-    if (typeInteractive == "button_reply") {
+  } else if (typeMessage === "interactive") {
+    const interactiveObject = messages["interactive"];
+    const typeInteractive = interactiveObject["type"];
+    
+    if (typeInteractive === "button_reply") {
       text = interactiveObject["button_reply"]["title"];
-    } else if (typeInteractive == "list_reply") {
+    } else if (typeInteractive === "list_reply") {
       text = interactiveObject["list_reply"]["title"];
-    } else {
-      myConsole.log("sin mensaje");
     }
-  } else {
-    myConsole.log("sin mensaje");
   }
   return text;
 }
