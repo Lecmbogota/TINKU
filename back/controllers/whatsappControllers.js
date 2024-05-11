@@ -1,9 +1,4 @@
 const fs = require("fs");
-const WebSocket = require("ws");
-// Crear un nuevo servidor de WebSocket
-const wss = new WebSocket.Server({ port: 8080 });
-// Función para enviar mensajes a todos los clientes conectados
-
 // Crear un archivo de texto
 const logsFileStream = fs.createWriteStream("./logs.txt");
 
@@ -12,16 +7,11 @@ const myConsole = new console.Console(logsFileStream);
 
 const processMessage = require("../shared/processMessage");
 
-// Variable para almacenar los mensajes recibidos
-let receivedMessages = [];
+// Lista de contactos
+let contacts = [
+  { id: 573196233749, name: "Luis Caraballo", phone: "573196233749", messages: [] }
+];
 
-const broadcastMessage = (message) => {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(message));
-    }
-  });
-};
 const verifyToken = (req, res) => {
   try {
     const accessToken = "960782506041989";
@@ -49,18 +39,25 @@ const receivedMessage = (req, res) => {
     if (messageObject && messageObject.length > 0) {
       const messages = messageObject[0];
       
-      const number = messages["from"];
+      let number = parseInt(messages["from"]); // Convertir número de teléfono a entero
       myConsole.log("Numero: ", number);
 
       const text = GetTextUser(messages);
       myConsole.log("Mensaje: ", text);
 
       if(text !== ""){
-        receivedMessages.push({ number: number, text: text })
-
-        processMessage.Process(text, number)
-        myConsole.log(receivedMessages)
+        let contact = contacts.find(c => c.id === number);
+        if (!contact) {
+          // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
+          contact = { id: number, name: `Contacto ${number}`, phone: number.toString(), messages: [] };
+          contacts.push(contact);
+        }
+        // Agregamos el mensaje al contacto
+        contact.messages.push({ text: text, sentByMe: false });
       }
+      processMessage.Process(text, number)
+
+      myConsole.log("Contactos: ", contacts);
     }
 
     res.send("EVENT_RECEIVED");
@@ -96,15 +93,5 @@ function GetTextUser(messages) {
   }
   return text;
 };
-// Manejar conexiones de WebSocket
-wss.on("connection", (ws) => {
-  // Envía los mensajes recibidos al cliente cuando se conecta
-  ws.send(JSON.stringify({ type: "messages", data: receivedMessages }));
-
-  // Manejar mensajes enviados por el cliente (opcional)
-  ws.on("message", (message) => {
-    // Lógica para manejar mensajes enviados por el cliente, si es necesario
-  });
-});
 
 module.exports = { verifyToken, receivedMessage, getReceivedMessages };

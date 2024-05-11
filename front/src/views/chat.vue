@@ -151,15 +151,15 @@ export default {
       lastname: '',
       contacts: [
         {
-          id: 1, name: "Luis Caraballo", messages: [
+          id: 573196233749, name: "Luis Caraballo",phone: "573196233749", messages: [
             { text: "Hola", sentByMe: false },
             { text: "Hola, ¿cómo estás?", sentByMe: true },
             { text: "Bien, gracias", sentByMe: false }
           ]
         },
-        { id: 2, name: "Adriana Arias", messages: [] },
+        { id: 2, name: "Adriana Arias",phone: "573196233749", messages: [] },
         {
-          id: 3, name: "Maria Caraballo", messages: [
+          id: 3, name: "Maria Caraballo",phone: "573196233749", messages: [
             { text: "Hola", sentByMe: false },
             { text: "Hola, ¿cómo estás?", sentByMe: true },
             { text: "Bien, gracias", sentByMe: false }
@@ -178,38 +178,13 @@ export default {
     }
   },
   created() {
-    // Establecer conexión WebSocket al cargar el componente
-    const ws = new WebSocket('ws://ws.caraballo.pro');
-
-    // Manejar eventos de conexión abierta
-    ws.onopen = () => {
-      console.log('Conexión WebSocket establecida');
-    };
-
-    // Manejar mensajes entrantes del servidor WebSocket
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      // Actualizar la lista de mensajes del contacto actual con el mensaje recibido
-      this.currentContact.messages.push({ text: message.text, sentByMe: false });
-    };
-
-    // Manejar eventos de error
-    ws.onerror = (error) => {
-      console.error('Error en la conexión WebSocket:', error);
-    };
-
-    // Manejar eventos de cierre de conexión
-    ws.onclose = () => {
-      console.log('Conexión WebSocket cerrada');
-    };
-
-    // Simplemente para fines de demostración, obtén los mensajes del primer contacto al cargar la página
-    if (this.contacts.length > 0) {
-      this.currentContact = this.contacts[0];
-    }
-    // Obtener los mensajes del historial del contacto actual desde el back-end
-    this.fetchMessages();
-  },
+  // Simplemente para fines de demostración, obtén los mensajes del primer contacto al cargar la página
+  if (this.contacts.length > 0) {
+    this.currentContact = this.contacts[0];
+  }
+  // Obtener los mensajes del historial del contacto actual desde el back-end
+  this.fetchMessages();
+},
   methods: {
     adjustTextAreaHeight() {
       // Ajustar automáticamente la altura del textarea en función del contenido
@@ -240,15 +215,27 @@ export default {
     }*/
     sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
-        // Enviar el mensaje al servidor WebSocket
-        const message = {
-          contactId: this.currentContact.id,
-          text: this.newMessage,
-        };
-        ws.send(JSON.stringify(message));
-
-        // Limpiar el cuadro de texto
-        this.newMessage = '';
+        // Enviar el mensaje al back-end
+        fetch('/whatsapp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contactId: this.currentContact.id,
+            text: this.newMessage,
+          }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            // Actualizar el historial de mensajes del contacto actual
+            this.currentContact.messages.push({ text: data.text, sentByMe: true });
+            // Limpiar el cuadro de texto
+            this.newMessage = '';
+          })
+          .catch(error => {
+            console.error('Error al enviar el mensaje:', error);
+          });
       }
     },
     fetchMessages() {
