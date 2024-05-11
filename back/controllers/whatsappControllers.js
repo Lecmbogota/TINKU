@@ -1,5 +1,10 @@
 const fs = require("fs");
-const myConsole = require("./path/to/your/console"); // Importa tu instancia de Console
+
+// Crear un archivo de texto
+const logsFileStream = fs.createWriteStream("./logs.txt");
+
+// Crear una instancia de Console con el flujo de escritura hacia el archivo
+const myConsole = new console.Console(logsFileStream);
 
 const whatsappService = require("../services/whatsappService");
 
