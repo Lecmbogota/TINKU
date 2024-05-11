@@ -4,6 +4,7 @@
       <!-- Columna de contactos -->
       <div class="col elevation-4 m-0 p-0">
         <h4 class="text-center">Contactos</h4>
+        {{this.contactss}}
         <hr class="m-0">
         <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
           :class="{ 'active': contact === currentContact }" class="contact">
