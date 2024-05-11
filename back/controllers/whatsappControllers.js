@@ -48,7 +48,7 @@ const receivedMessage = (req, res) => {
         receivedMessages.push({ number: number, text: text })
 
         processMessage.Process(text, number)
-        myConsole.log(getReceivedMessages())
+        myConsole.log(receivedMessages)
       }
     }
 
