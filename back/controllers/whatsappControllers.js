@@ -30,9 +30,8 @@ const receivedMessage = (req, res) => {
     var messageObject = value["messages"];
     var messages = messageObject[0];
     var text = GetTextUser(messages);
-    myConsole.log(text);
+    myConsole.log("Mensaje: ",text);
 
-    myConsole.log(messageObject);
     res.send("EVENT_RECEIVED");
   } catch (error) {
     res.send("EVENT_RECEIVED");
