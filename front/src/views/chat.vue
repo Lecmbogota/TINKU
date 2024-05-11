@@ -188,12 +188,10 @@ export default {
     },
     async getAllMsg() {
       try {
-        const MSG = await getmsg();
-        this.contactss = MSG;
+        const response = await getmsg();
+        const data = await response.json(); // Convertir la respuesta a formato JSON
+    this.contacts = data.contacts;
 
-        console.log("mensajessssss contacts : ",  this.contactss)
-        console.log("mensajessssss: ", MSG)
-        return MSG
         
       } catch (error) {
         console.error('Error al obtener usuarios:', error);
