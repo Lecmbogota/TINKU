@@ -24,6 +24,19 @@ function SampleImage(number) {
   });
   return data;
 }
+function sampleAudio(number){
+    const data = JSON.stringify(
+        {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: number,
+            type: "audio",
+            audio: {
+                link: "https://th.bing.com/th/id/R.35720bbf29a0f0f1d48195bafdbedf7a?rik=czw7MPt7Sjb1Mg&pid=ImgRaw&r=0",
+            },
+        }
+    )
+}
 
 module.exports = {
   SampleText,
