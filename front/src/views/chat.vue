@@ -88,7 +88,8 @@
 
                 <div class="row m-0 p-0">
                   <div class="col-12 d-flex justify-content-center">
-                    <div class="avatar-3">{{ currentContact.name.charAt(0) }}</div>
+                    <div class="avatar">{{ currentContact && currentContact.name ? currentContact.name.charAt(0) : '' }}</div>
+
                   </div>
                 </div>
                 <div class="row m-0 p-0">
