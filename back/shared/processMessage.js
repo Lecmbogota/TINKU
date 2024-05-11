@@ -2,29 +2,33 @@ const whatsappModel = require("../shared/whatsappModels");
 const whatsappService = require("../services/whatsappService");
 
 function process(textUser, number) {
-  textUser = textUser.toLowCase();
-  var models = [];
+  textUser = textUser.toLowerCase(); // Corregir función toLowerCase
+  const models = [];
+
   if (textUser.includes("hola")) {
     // Saludar
-    var model = whatsappModel.MessageText("hola un gusto saludarte", number);
+    const model = whatsappModel.MessageText("Hola, ¡un gusto saludarte!", number);
     models.push(model);
   }
 
   if (textUser.includes("adios") || textUser.includes("adiós")) {
     // Despedida
-    var model = whatsappModel.MessageText("Gracias Por Contactactarnos ❤", number);
-    models.push(model);
-  }
-  else{
-    // No entiende el mensaje del usuario
-    var model = whatsappModel.MessageText("no entiendo lo que dices", number);
+    const model = whatsappModel.MessageText("Gracias por contactarnos ❤", number);
     models.push(model);
   }
 
+  if (models.length === 0) {
+    // No entiende el mensaje del usuario
+    const model = whatsappModel.MessageText("No entiendo lo que dices", number);
+    models.push(model);
+  }
+
+  // Enviar todos los modelos
   models.forEach((model) => {
-    whatsappService.SendMessageWhatsapp(model);
+    whatsappService.SendMessageWhatsapp(model.text, model.number);
   });
 }
+
 module.exports = {
   process,
 };
