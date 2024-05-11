@@ -141,6 +141,7 @@
 </template>
 
 <script>
+import { getmsg } from '../services/agentServices';
 export default {
   data() {
     return {
