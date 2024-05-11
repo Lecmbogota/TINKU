@@ -7,9 +7,10 @@ function SendMessageWhatsapp(textResponse, number) {
     type: "text",
     text: {
       preview_url: true,
-      body: textResponse,
+      body: textResponse
     },
   });
+
   const options = {
     host: "graph.facebook.com",
     path: "/v18.0/117778997940747/messages",
