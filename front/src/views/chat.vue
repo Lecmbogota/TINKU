@@ -144,6 +144,7 @@
 
 <script>
 import { getmsg } from '../services/agentServices';
+
 export default {
   data() {
     return {
@@ -162,19 +163,19 @@ export default {
     }
   },
   created() {
-  // Simplemente para fines de demostración, obtén los mensajes del primer contacto al cargar la página
-  if (this.contacts.length > 0) {
-    this.currentContact = this.contacts[0];
-  }
-  // Obtener los mensajes del historial del contacto actual desde el back-end
-  this.fetchMessages();
-  this.getAllMsg();
-},
+    this.getAllMsg();
+  },
   methods: {
     async getAllMsg() {
       try {
         const MSG = await getmsg();
         this.contacts = MSG;
+        // Seleccionar el primer contacto si hay alguno
+        if (this.contacts.length > 0) {
+          this.currentContact = this.contacts[0];
+          // Obtener los mensajes del historial del primer contacto
+          this.fetchMessages();
+        }
       } catch (error) {
         console.error('Error al obtener usuarios:', error);
       }
@@ -188,6 +189,8 @@ export default {
     },
     selectContact(contact) {
       this.currentContact = contact;
+      // Obtener los mensajes del historial del contacto seleccionado
+      this.fetchMessages();
     },
     getLastMessage(contact) {
       const lastMessage = contact.messages && contact.messages.length > 0 ? contact.messages[contact.messages.length - 1] : null;
@@ -201,12 +204,6 @@ export default {
         return 'No hay mensajes';
       }
     },
-    /*sendMessage() {
-      if (this.newMessage.trim() !== '' && this.currentContact) {
-        this.currentContact.messages.push({ text: this.newMessage, sentByMe: true });
-        this.newMessage = '';
-      }
-    }*/
     sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         // Enviar el mensaje al back-end
