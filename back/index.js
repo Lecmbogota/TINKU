@@ -507,6 +507,7 @@ app.get("/api/verifyToken", authenticateJWT, (req, res) => {
 
 
 app.use("/whatsapp", apiRoutes)
+app.use("/msgs", apiRoutes)
 // Inicia el servidor
 server.listen(PORT, () => {
   console.log(`Servidor Express en http://localhost:${PORT}`);

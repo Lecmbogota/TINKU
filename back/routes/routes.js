@@ -6,6 +6,6 @@ const WhatsappController = require("../controllers/whatsappControllers")
 router
   .get("/", WhatsappController.verifyToken) // Verificar token
   .post("/", WhatsappController.receivedMessage) // Manejar mensajes recibidos
-  .get("/", WhatsappController.getReceivedMessages); // Obtener mensajes recibidos
+  .get("/msgs", WhatsappController.getReceivedMessages); // Obtener mensajes recibidos
 
 module.exports = router;

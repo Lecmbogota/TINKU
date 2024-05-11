@@ -51,16 +51,16 @@ const receivedMessage = (req, res) => {
     const changes = entry["changes"][0];
     const value = changes["value"];
     const messageObject = value["messages"];
-    
+
     if (messageObject && messageObject.length > 0) {
       const messages = messageObject[0];
       const number = messages["from"];
       myConsole.log("Numero: ", number);
       const text = GetTextUser(messages);
       myConsole.log("Mensaje: ", text);
-      if(text !== ""){
-        receivedMessages.push({ number, text })
-        processMessage.Process(text, number)
+      if (text !== "") {
+        receivedMessages.push({ number, text });
+        processMessage.Process(text, number);
       }
     }
     res.send("EVENT_RECEIVED");
