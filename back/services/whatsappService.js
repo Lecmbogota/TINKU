@@ -1,6 +1,7 @@
 const https = require("https");
 
 function SendMessageWhatsapp(data) {
+  console.log("💥💢💌💟💌",data)
   const options = {
     host: "graph.facebook.com",
     path: "/v18.0/117778997940747/messages",

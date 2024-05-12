@@ -37,10 +37,10 @@ function Process(textUser, number) {
   models.forEach(model => {
     whatsappService.SendMessageWhatsapp(model);
   });
-}
-function ProcessAgent(message, number){
-  whatsappModel.MessageText(message, number);
-}
+};
+function ProcessAgent(textResponse, number){
+  whatsappModel.MessageText(textResponse, number);
+};
 
 module.exports = {
     Process,
