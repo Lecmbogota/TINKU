@@ -79,6 +79,17 @@ const sendMsg = (req, res) => {
   try {
     const { textResponse, number } = req.body; // Suponiendo que el mensaje y el número se envían en el cuerpo de la solicitud
     processMessage.ProcessAgent(textResponse, number); // Llama a la función ProcessAgent con el mensaje y el número
+
+    if(textResponse !== ""){
+      let contact = contacts.find(c => c.id === number);
+      if (!contact) {
+        // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
+        contact = { id: number, name: `Contacto ${number}`, phone: number.toString(), messages: [] };
+        contacts.push(contact);
+      }
+      // Agregamos el mensaje al contacto
+      contact.messages.push({ text: text, sender: "cliente" });
+    }
     res.status(200).json({ success: true, message: 'Mensaje enviado correctamente', textResponse, number });
   } catch (error) {
     console.error('Error al enviar el mensaje:', error);
