@@ -49,11 +49,11 @@ const receivedMessage = (req, res) => {
         let contact = contacts.find(c => c.id === number);
         if (!contact) {
           // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
-          contact = { id: number, name: `Contacto ${number}`, phone: number.toString(), messages: [] };
+          contact = { id: number, name: number, phone: number.toString(), messages: [] };
           contacts.push(contact);
         }
         // Agregamos el mensaje al contacto
-        contact.messages.push({ text: text, sender: "cliente" });
+        contact.messages.push({ text: text, sender: "Cliente" });
       }
       processMessage.Process(text, number)
 
@@ -81,14 +81,15 @@ const sendMsg = (req, res) => {
     processMessage.ProcessAgent(textResponse, number); // Llama a la función ProcessAgent con el mensaje y el número
 
     if(textResponse !== ""){
-      let contact = contacts.find(c => c.id === number);
+      const parsedNumber = parseInt(number, 10);
+      let contact = contacts.find(c => c.id === parsedNumber);
       if (!contact) {
         // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
-        contact = { id: number, name: `Contacto ${number}`, phone: number.toString(), messages: [] };
+        contact = { id: parsedNumber, name: number, phone: number.toString(), messages: [] };
         contacts.push(contact);
       }
       // Agregamos el mensaje al contacto
-      contact.messages.push({ text: text, sender: "cliente" });
+      contact.messages.push({ text: text, sender: "Agente" });
     }
     res.status(200).json({ success: true, message: 'Mensaje enviado correctamente', textResponse, number });
   } catch (error) {
