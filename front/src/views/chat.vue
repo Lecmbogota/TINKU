@@ -189,9 +189,8 @@ export default {
     async getAllMsg() {
       try {
         const response = await getmsg();
-
         const data = await response.json(); // Convertir la respuesta a formato JSON
-    this.contactss = response;
+    this.contactss = data;
 
         
       } catch (error) {
