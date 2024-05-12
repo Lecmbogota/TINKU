@@ -187,16 +187,15 @@ export default {
       }
     },
     async getAllMsg() {
-      try {
-        const response = await getmsg();
-        const data = await response.json(); // Convertir la respuesta a formato JSON
-    this.contactss = data;
+  try {
+    const response = await getmsg();
+    // Asignar directamente la lista de contactos al arreglo de contacts
+    this.contactss = response;
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+  }
+},
 
-        
-      } catch (error) {
-        console.error('Error al obtener usuarios:', error);
-      }
-    },
     sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         this.currentContact.messages.push({ text: this.newMessage, sentByMe: true });
