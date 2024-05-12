@@ -190,6 +190,7 @@ export default {
   try {
     const response = await getmsg();
     // Asignar directamente la lista de contactos al arreglo de contacts
+    this.contacts = response;
     this.contactss = response;
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
