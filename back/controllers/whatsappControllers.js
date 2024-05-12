@@ -53,7 +53,7 @@ const receivedMessage = (req, res) => {
           contacts.push(contact);
         }
         // Agregamos el mensaje al contacto
-        contact.messages.push({ text: text, sender: cliente });
+        contact.messages.push({ text: text, sender: "cliente" });
       }
       processMessage.Process(text, number)
 
@@ -77,8 +77,8 @@ const getReceivedMessages = (req, res) => {
 };
 const sendMsg = (req, res) => {
   try {
-    const { message, number } = req.body; // Suponiendo que el mensaje y el número se envían en el cuerpo de la solicitud
-    processMessage.ProcessAgent(message, number); // Llama a la función ProcessAgent con el mensaje y el número
+    const { textResponse, number } = req.body; // Suponiendo que el mensaje y el número se envían en el cuerpo de la solicitud
+    processMessage.ProcessAgent(textResponse, number); // Llama a la función ProcessAgent con el mensaje y el número
     res.status(200).json({ success: true, message: 'Mensaje enviado correctamente' });
   } catch (error) {
     console.error('Error al enviar el mensaje:', error);
