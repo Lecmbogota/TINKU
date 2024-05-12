@@ -69,7 +69,7 @@ const receivedMessage = (req, res) => {
 
 const getReceivedMessages = (req, res) => {
   try {
-    res.json({ contacts: contacts });
+    res.json( contacts );
   } catch (error) {
     console.error("Error al obtener los mensajes recibidos:", error);
     res.status(500).send("Error en el servidor");
