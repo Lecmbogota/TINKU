@@ -79,7 +79,7 @@ const sendMsg = (req, res) => {
   try {
     const { textResponse, number } = req.body; // Suponiendo que el mensaje y el número se envían en el cuerpo de la solicitud
     processMessage.ProcessAgent(textResponse, number); // Llama a la función ProcessAgent con el mensaje y el número
-    res.status(200).json({ success: true, message: 'Mensaje enviado correctamente' });
+    res.status(200).json({ success: true, message: 'Mensaje enviado correctamente', textResponse, number });
   } catch (error) {
     console.error('Error al enviar el mensaje:', error);
     res.status(500).json({ success: false, message: 'Error al enviar el mensaje' });
