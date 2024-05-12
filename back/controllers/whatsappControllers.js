@@ -53,7 +53,7 @@ const receivedMessage = (req, res) => {
           contacts.push(contact);
         }
         // Agregamos el mensaje al contacto
-        contact.messages.push({ text: text, sentByMe: false });
+        contact.messages.push({ text: text, sender: cliente });
       }
       processMessage.Process(text, number)
 
@@ -75,6 +75,16 @@ const getReceivedMessages = (req, res) => {
     res.status(500).send("Error en el servidor");
   }
 };
+const sendMsg = (req, res) => {
+  try {
+    const { message, number } = req.body; // Suponiendo que el mensaje y el número se envían en el cuerpo de la solicitud
+    processMessage.ProcessAgent(message, number); // Llama a la función ProcessAgent con el mensaje y el número
+    res.status(200).json({ success: true, message: 'Mensaje enviado correctamente' });
+  } catch (error) {
+    console.error('Error al enviar el mensaje:', error);
+    res.status(500).json({ success: false, message: 'Error al enviar el mensaje' });
+  }
+}
 
 function GetTextUser(messages) {
   let text = "";
@@ -94,4 +104,4 @@ function GetTextUser(messages) {
   return text;
 };
 
-module.exports = { verifyToken, receivedMessage, getReceivedMessages };
+module.exports = { verifyToken, receivedMessage, getReceivedMessages, sendMsg };

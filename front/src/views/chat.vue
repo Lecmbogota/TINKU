@@ -45,7 +45,7 @@
           </div>
           <div v-if="currentContact" class="chat-history">
             <div v-for="(message, index) in currentContact.messages" :key="index" class="message"
-              :class="{ 'sent': message.sentByMe, 'received': !message.sentByMe }">
+              :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
               <div class="message-content">{{ message.text }}</div>
             </div>
             <hr class="m-0 p-0">
@@ -199,7 +199,7 @@ export default {
 
     sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
-        this.currentContact.messages.push({ text: this.newMessage, sentByMe: true });
+        this.currentContact.messages.push({ text: this.newMessage, sender: "Agente" });
         this.newMessage = '';
       }
     }
@@ -331,6 +331,17 @@ export default {
   background-color: #E3F2FD;
   /* Color de fondo */
   width: 75%;
+  /* Anchura de la burbuja */
+  margin-left: auto;
+  /* Margen izquierdo automático para alinear la burbuja a la derecha */
+}
+
+.system .message-content {
+  text-align: center;
+  /* Alinea el texto a la derecha dentro de la burbuja */
+  background-color: #ffebce;
+  /* Color de fondo */
+  width: 50%;
   /* Anchura de la burbuja */
   margin-left: auto;
   /* Margen izquierdo automático para alinear la burbuja a la derecha */

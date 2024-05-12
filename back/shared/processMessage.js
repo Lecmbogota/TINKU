@@ -38,7 +38,11 @@ function Process(textUser, number) {
     whatsappService.SendMessageWhatsapp(model);
   });
 }
+function ProcessAgent(message, number){
+  whatsappModel.MessageText(message, number);
+}
 
 module.exports = {
     Process,
+    ProcessAgent,
 };
