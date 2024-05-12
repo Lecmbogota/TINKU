@@ -190,7 +190,7 @@ export default {
       try {
         const response = await getmsg();
         const data = await response.json(); // Convertir la respuesta a formato JSON
-    this.contacts = data.contacts;
+    this.contactss = data.contacts;
 
         
       } catch (error) {
