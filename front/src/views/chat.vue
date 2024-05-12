@@ -164,7 +164,13 @@ export default {
     }
   },
   created() {
-    this.getAllMsg()
+    // Ejecuta getAllMsg inmediatamente al crear el componente
+  this.getAllMsg();
+
+// Ejecuta getAllMsg cada 5 segundos
+setInterval(() => {
+  this.getAllMsg();
+}, 5000);
   },
   methods: {
     adjustTextAreaHeight() {
@@ -200,12 +206,23 @@ export default {
     },
 
     async sendMessage() {
-      if (this.newMessage.trim() !== '' && this.currentContact) {
-        this.currentContact.messages.push({ text: this.newMessage, sender: "Agente" });
-await sendmsg( text, this.currentContact.phone )
-        this.newMessage = '';
-      }
+  try {
+    if (this.newMessage.trim() !== '' && this.currentContact) {
+      // Agregamos el mensaje al historial del contacto actual
+      this.currentContact.messages.push({ text: this.newMessage, sender: "Agente" });
+      
+      // Llamamos a la función sendmsg con el texto del mensaje y el número de teléfono del contacto actual
+      await sendmsg(this.newMessage, this.currentContact.phone);
+      
+      // Limpiamos el cuadro de texto después de enviar el mensaje
+      this.newMessage = '';
     }
+  } catch (error) {
+    console.error('Error al enviar el mensaje:', error);
+    // Puedes manejar el error de la manera que consideres adecuada
+  }
+}
+
   }
 };
 </script>
