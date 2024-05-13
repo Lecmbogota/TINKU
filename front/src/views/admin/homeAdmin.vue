@@ -12,10 +12,13 @@
 
           </li>
           <li class="nav-item">
-            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'"> <strong>Admin</strong>Panel</a>
+            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'"> <strong>Configuraciones</strong></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'chat' }" href="#" @click="tab = 'chat'"> <strong>chat</strong></a>
+            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'"> <strong>Auditoria</strong></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'chat' }" href="#" @click="tab = 'chat'"> <strong>Chat</strong>Go</a>
           </li>
         </ul>
         <div class="nav-item">
@@ -30,7 +33,7 @@
       </div>
     </nav>
     <router-view>
-      <Panel v-show="tab === 'Panel'"></Panel>
+      <adminUsers v-show="tab === 'Panel'"></adminUsers>
       <administracion v-show="tab === 'Users'"></administracion>
       <chat v-show="tab === 'chat'"></chat>
     </router-view>
@@ -43,7 +46,7 @@
 import router from '../../router/routes';
 import logo from '../../assets/img/logo2.jpg';
 import isotipo from '../../assets/img/isotipo.jpg';
-import Panel from '@/views/panelDeControl.vue';
+import adminUsers from '@/views/adminUsers.vue';
 import chat from '@/views/chat.vue';
 import administracion from '@/views/administracion.vue'
 
@@ -61,7 +64,7 @@ export default {
   },
   // Cambiado de component a components
   components: {
-    Panel,
+    adminUsers,
     administracion,
     chat
   },

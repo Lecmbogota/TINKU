@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="row">
       <!-- Columna de contactos -->
-      <div class="col elevation-4 m-0 p-0">
+      <div class="col elevation-4 m-0 p-0" style="height:94vh">
         <h4 class="text-center">Contactos</h4>
         <hr class="m-0">
         <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
@@ -40,6 +40,9 @@
               <div class="col m-0 p-0">
                 <h4>{{ currentContact.name }}</h4>
               </div>
+              <div class="col m-0 p-0 text-end">
+                <button class="btn btn-sm btn-primary">Llamar</button>
+              </div>
 
             </div>
           </div>
@@ -48,15 +51,26 @@
             <!--listado de burbujas de la conversacion-->
             <div v-for="(message, index) in currentContact.messages" :key="index" class="message"
               :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
-              <div class="message-content">{{ message.text }}</div>
+              <div class="message-container"
+                :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
+                <div v-if="message.sender === 'Cliente'" class="avatar-cliente">{{ currentContact.name.charAt(0) }}
+                </div>
+                <div class="message-content">{{ message.text }}</div>
+                <div v-if="message.sender === 'Agente'" class="avatar-agente"><i class="bi bi-headset"></i></div>
+              </div>
+
             </div>
             <hr class="m-0 p-0">
             <!--textarea para enviar un msg-->
             <div v-if="currentContact" class="chat-input">
+              <ul v-if="showRepliesList" class="quick-replies-list">
+                <li v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">{{ reply.text
+                  }}</li>
+              </ul>
               <textarea v-model="newMessage" :rows="numRows" type="text"
                 placeholder="Shift + enter for new line. Comience con '/' para seleccionar una respuesta predefinida."
-                class="form-control rounded resize-textarea  no-focus-outline"
-                @keydown.enter.prevent="sendMessage"></textarea>
+                class="form-control rounded resize-textarea  no-focus-outline" @keydown.enter.prevent="sendMessage"
+                ></textarea>
 
 
             </div>
@@ -66,8 +80,9 @@
                 <button class="btn btn-sm bg-grey-lighten-2"><i class="bi bi-paperclip"></i></button>
               </div>
               <div class="col-6 d-flex justify-content-end">
-                <button @click="sendMessage" class="btn btn-sm btn-primary"><i
-                    class="bi bi-send me-1"></i>Enviar</button>
+                <button @click="sendMessage" class="btn btn-sm btn-primary" :disabled="newMessage.trim() === ''">
+                  <i class="bi bi-send me-1"></i>Enviar
+                </button>
               </div>
             </div>
 
@@ -79,15 +94,17 @@
       <div class="col-3 m-0 p-0 elevation-4">
 
         <v-tabs v-model="tab" bg-color="primary">
-          <v-tab value="Contacto"> <i class="bi bi-person-vcard-fill me-1"></i> Contacto</v-tab>
-          <v-tab value="tipificar"><i class="bi bi-card-list me-1"></i> Formulario</v-tab>
+          <v-tab value="Perfil"> <i class="bi bi-person-vcard-fill me-1"></i> Perfil</v-tab>
+          <v-tab value="tipificar"><i class="bi bi-card-list me-1"></i> {{ this.optionButton }}</v-tab>
 
         </v-tabs>
 
         <v-card-text class="m-0 p-0">
           <v-tabs-window v-model="tab" class="m-0 p-0">
-            <v-tabs-window-item value="Contacto">
-              <div v-if="currentContact" class="chat-header">
+
+            <!-- seccion de perfil -->
+            <v-tabs-window-item value="Perfil">
+              <div v-show="currentContact" class="chat-header">
 
                 <div class="row m-0 p-0">
                   <div class="col-12 d-flex justify-content-center">
@@ -99,6 +116,37 @@
                     <h4>{{ currentContact.name }}</h4>
                   </div>
                 </div>
+                <hr class="m-0 p-0" />
+
+
+                <div class="px-2">
+                  <div class="row m-0 p-0">
+                    <div class="col text-start">
+                      <a style="font-size: 12px; margin-right: 8px; margin-top: -3px;"><strong> <i
+                            class="bi bi-telephone me-1"></i> telefono:
+                        </strong>{{ currentContact.phone }}</a>
+                    </div>
+                  </div>
+
+                  <div class="row m-0 p-0">
+                    <div class="col text-start">
+                      <a style="font-size: 12px; margin-right: 8px; margin-top: -3px;"><strong><i
+                            class="bi bi-map me-1"></i> Direccion:
+                        </strong>Activo</a>
+                    </div>
+                  </div>
+
+                  <div class="row m-0 p-0">
+                    <div class="col text-start">
+                      <a style="font-size: 12px; margin-right: 8px; margin-top: -3px;"><strong>Conectado:
+                        </strong>20:33</a>
+                    </div>
+                  </div>
+                </div>
+
+                <hr class="m-0 p-0" />
+
+
 
 
 
@@ -106,33 +154,29 @@
             </v-tabs-window-item>
 
             <v-tabs-window-item value="tipificar">
-              <section class="row" v-if="optionButton === 'tipificacion'">
+              <section class="row" v-show="optionButton === 'tipificacion'">
                 <div class="col-12 mt-4">
-                  <img :src="analisys" alt="analisys"  class="d-inline-block align-text-top w-100 m-5" />
+                  <img :src="analisys" alt="analisys" class="d-inline-block align-text-top w-100 p-5" />
                 </div>
-                <div class="col-6 mt-5 text-center">
-                  <v-btn   size="large"
-                  variant="flat"
-                  block class="bg-grey-lighten-2 mx-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
+                <div class="col-12 mt-5  px-5 text-center">
+                  <v-btn size="large" variant="flat" block class="bg-grey-lighten-2 mx-2"
+                    @click="optionButton = 'acepta'"> Acepta </v-btn>
                 </div>
-                <div class="col-6 mt-5 text-center">
-                  <v-btn   size="large"
-                  variant="flat"
-                  block class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
+                <div class="col-12 mt-5 px-5 text-center">
+                  <v-btn size="large" variant="flat" block class="bg-grey-lighten-2 mx-2"
+                    @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
                 </div>
-                <div class="col-6 mt-5 text-center">
-                  <v-btn   size="large"
-                  variant="flat"
-                  block class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Agendar'"> Agendar </v-btn>
+                <div class="col-12 mt-5 px-5 text-center">
+                  <v-btn size="large" variant="flat" block class="bg-grey-lighten-2 mx-2"
+                    @click="optionButton = 'Agendar'"> Agendar </v-btn>
                 </div>
-                <div class="col-6 mt-5 text-center">
-                  <v-btn  size="large"
-                  variant="flat"
-                  block class="bg-grey-lighten-2 mx-2" @click="optionButton = 'NoCalifica'"> No Califica
+                <div class="col-12 mt-5 px-5 text-center">
+                  <v-btn size="large" variant="flat" block class="bg-grey-lighten-2 mx-2"
+                    @click="optionButton = 'NoCalifica'"> No Califica
                   </v-btn>
                 </div>
               </section>
-              <section v-if="optionButton === 'acepta'">
+              <section v-show="optionButton === 'acepta'">
                 <v-form v-model="valid" class="m-0 p-0">
                   <v-container class="m-0 p-0">
 
@@ -176,6 +220,7 @@
 <script>
 import { getmsg, sendmsg } from '../services/agentServices';
 import analisys from '../../src/assets/img/analisys.svg';
+
 export default {
   data() {
     return {
@@ -188,6 +233,14 @@ export default {
       newMessage: '',
       optionButton: 'tipificacion',
       analisys: analisys,
+      quickReplies: [
+        { id: 1, text: 'Sí', value: 'Sí, estoy de acuerdo.' },
+        { id: 2, text: 'No', value: 'No, estoy en desacuerdo.' },
+        { id: 3, text: 'Estoy interesado', value: 'Estoy interesado en tu oferta.' },
+        { id: 4, text: 'Más información', value: 'Por favor, proporciona más información.' },
+        // Puedes agregar más respuestas rápidas según sea necesario
+      ],
+      showRepliesList: false,
     };
   },
   computed: {
@@ -206,11 +259,23 @@ export default {
     }, 5000);
   },
   methods: {
+    checkForSlash() {
+      if (this.newMessage.includes('/')) {
+        this.showRepliesList = !this.showRepliesList;
+      }
+    },
     adjustTextAreaHeight() {
       // Ajustar automáticamente la altura del textarea en función del contenido
       const textarea = this.$refs.textarea;
       textarea.style.height = 'auto';
       textarea.style.height = textarea.scrollHeight + 'px';
+    },
+    showQuickReplies() {
+      this.showRepliesList = !this.showRepliesList;
+    },
+    selectQuickReply(reply) {
+      this.newMessage = reply;
+      this.showRepliesList = false; // Oculta la lista de respuestas rápidas después de seleccionar una
     },
     selectContact(contact) {
       this.currentContact = contact;
@@ -237,14 +302,6 @@ export default {
         console.error('Error al obtener usuarios:', error);
       }
     },
-    async smg(text, number) {
-      try {
-
-      } catch (error) {
-        console.error('Error al obtener usuarios:', error);
-      }
-    },
-
     async sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         const messageContent = this.newMessage.trim();
@@ -253,16 +310,21 @@ export default {
         this.currentContact.messages.push({ text: messageContent, sender: "Agente" });
 
         // Llamar a la función sendMsg para enviar el mensaje al número del contacto actual
-
         await sendmsg(messageContent, contactNumber);
 
         // Limpiar el cuadro de texto después de enviar el mensaje
         this.newMessage = '';
       }
     },
-
   },
   watch: {
+    newMessage(newValue) {
+      if (newValue.includes('/')) {
+        this.showRepliesList = true;
+      } else {
+        this.showRepliesList = false;
+      }
+    },
     contacts: {
       deep: true,
       handler(newContacts, oldContacts) {
@@ -283,6 +345,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .no-focus-outline {
@@ -345,6 +408,11 @@ export default {
   margin-right: 5px;
 }
 
+.message-container {
+  display: flex;
+  align-items: center;
+}
+
 .avatar-2 {
   width: 30px;
   height: 30px;
@@ -356,6 +424,35 @@ export default {
   color: white;
   font-size: 20px;
   margin-right: 5px;
+
+}
+
+.avatar-cliente {
+  width: 30px;
+  height: 30px;
+  background-color: #c8c8c8;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  margin-right: 5px;
+
+}
+
+.avatar-agente {
+  width: 30px;
+  height: 30px;
+  background-color: rgb(136, 182, 215);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  margin-left: 5px;
+
 }
 
 .avatar-3 {
@@ -373,6 +470,12 @@ export default {
 
 .contact-details {
   flex: 1;
+}
+
+.form-control:focus {
+  border-color: #ffffff00 !important;
+  outline: 0;
+  box-shadow: none;
 }
 
 /* Estilos para el área principal */

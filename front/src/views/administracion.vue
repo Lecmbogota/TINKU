@@ -32,20 +32,20 @@
         </li>
       </ul>
     </div>
-    <div id="panel" class="col" style="margin-left:200px">
+    <div id="adminUsers" class="col" style="margin-left:200px">
       <router-view>
-        <Panel></Panel>
+        <adminUsers></adminUsers>
       </router-view>
     </div>
   </div>
 </template>
 
 <script>
-import Panel from '@/views/panelDeControl.vue'
+import adminUsers from '@/views/adminUsers.vue'
 export default {
   name: 'Sidebar',
   components: {
-    Panel
+    adminUsers
   },
   data() {
     return {
