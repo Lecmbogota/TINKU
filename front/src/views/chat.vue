@@ -107,6 +107,7 @@
 
             <v-tabs-window-item value="tipificar">
               <section v-if="optionButton === 'tipificacion'" >
+                <img :src="analisys" alt="analisys" height="100" class="d-inline-block align-text-top" />
                 <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
                 <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
                 <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'NoCalifica'"> No Califica </v-btn>
@@ -155,6 +156,7 @@
 
 <script>
 import { getmsg, sendmsg } from '../services/agentServices';
+import analisys from '../../assets/img/logo2.jpg';
 export default {
   data() {
     return {
@@ -166,6 +168,7 @@ export default {
       currentContact: null,
       newMessage: '',
       optionButton: 'tipificacion',
+      analisys: analisys,
     };
   },
   computed: {
