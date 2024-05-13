@@ -245,9 +245,6 @@ export default {
             if (updatedContact) {
               // Selecciona el contacto actualizado
               this.selectContact(updatedContact);
-            } else {
-              // Si el contacto actual no está en la lista actualizada, establece currentContact en nulo
-              this.currentContact = null;
             }
           }
         }
