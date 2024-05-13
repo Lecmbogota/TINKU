@@ -215,7 +215,9 @@ export default {
     async sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         const messageContent = this.newMessage.trim();
+        console.log(messageContent)
         const contactNumber = this.currentContact.phone;
+        console.log(contactNumber)
 
         // Agregar el nuevo mensaje a la lista de mensajes del contacto actual
         this.currentContact.messages.push({ text: messageContent, sender: "Agente" });
