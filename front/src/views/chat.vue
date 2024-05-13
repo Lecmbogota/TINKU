@@ -156,7 +156,7 @@
 
 <script>
 import { getmsg, sendmsg } from '../services/agentServices';
-import analisys from '../../assets/img/logo2.jpg';
+import analisys from '../../src/assets/img/analisys.svg';
 export default {
   data() {
     return {
