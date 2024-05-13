@@ -107,21 +107,21 @@
 
             <v-tabs-window-item value="tipificar">
               <section class="row" v-if="optionButton === 'tipificacion'">
-                <div class="col-12">
+                <div class="col-12 mt-4">
                   <img :src="analisys" alt="analisys"  class="d-inline-block align-text-top w-100" />
                 </div>
-                <div class="col-6 mt-2 d.flex justify-content-center">
+                <div class="col-6 mt-5 d.flex justify-content-center">
                   <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
                 </div>
-                <div class="col-6 mt-2 text-center">
+                <div class="col-6 mt-5 text-center">
+                  <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Agendar'"> Agendar </v-btn>
+                </div>
+                <div class="col-6 mt-5 text-center">
                   <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
                 </div>
-                <div class="col-6 mt-2 text-center">
+                <div class="col-6 mt-5 text-center">
                   <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'NoCalifica'"> No Califica
                   </v-btn>
-                </div>
-                <div class="col-6 mt-2 text-center">
-                  <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Agendar'"> Agendar </v-btn>
                 </div>
               </section>
               <section v-if="optionButton === 'acepta'">
