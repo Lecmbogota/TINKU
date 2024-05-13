@@ -16,8 +16,8 @@
               </div>
               <div class="col-12 d-flex justify-content-start align-items-center ">
                 <!--<i class="bi bi-check text-grey-lighten-1 me-1"></i><a style="font-size: 14px;">{{getLastMessage(contact) }}</a>-->
-                <i class="bi bi-check-all text-green-lighten-1 me-1"></i><a
-                  style="font-size: 14px;">{{ getLastMessage(contact) }}</a>
+                <i class="bi bi-check-all text-green-lighten-1 me-1"></i><a style="font-size: 14px;">{{
+                  getLastMessage(contact) }}</a>
               </div>
               <div class="col-12 d-flex justify-content-end align-items-end ">
                 <a style="font-size: 10px; margin-right: 8px; margin-top: -3px;"><strong>Última vez: </strong>20:33</a>
@@ -165,12 +165,12 @@ export default {
   },
   created() {
     // Ejecuta getAllMsg inmediatamente al crear el componente
-  this.getAllMsg();
+    this.getAllMsg();
 
-// Ejecuta getAllMsg cada 5 segundos
-setInterval(() => {
-  this.getAllMsg();
-}, 5000);
+    // Ejecuta getAllMsg cada 5 segundos
+    setInterval(() => {
+      this.getAllMsg();
+    }, 5000);
   },
   methods: {
     adjustTextAreaHeight() {
@@ -206,7 +206,7 @@ setInterval(() => {
     },
     async smg(text, number) {
       try {
-        
+
       } catch (error) {
         console.error('Error al obtener usuarios:', error);
       }
@@ -214,8 +214,16 @@ setInterval(() => {
 
     async sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
-        this.currentContact.messages.push({ text: this.newMessage, sender: "Agente" });
-        await sendmsg("573196233749", "573196233749");
+        const messageContent = this.newMessage.trim();
+        const contactNumber = this.currentContact.phone;
+
+        // Agregar el nuevo mensaje a la lista de mensajes del contacto actual
+        this.currentContact.messages.push({ text: messageContent, sender: "Agente" });
+
+        // Llamar a la función sendMsg para enviar el mensaje al número del contacto actual
+        await sendMsg({ textResponse: messageContent, number: contactNumber });
+
+        // Limpiar el cuadro de texto después de enviar el mensaje
         this.newMessage = '';
       }
     }
