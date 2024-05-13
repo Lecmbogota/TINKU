@@ -223,7 +223,8 @@ export default {
         this.currentContact.messages.push({ text: messageContent, sender: "Agente" });
 
         // Llamar a la función sendMsg para enviar el mensaje al número del contacto actual
-        await sendMsg({ textResponse: messageContent, number: contactNumber });
+
+        await sendmsg(messageContent, contactNumber);
 
         // Limpiar el cuadro de texto después de enviar el mensaje
         this.newMessage = '';

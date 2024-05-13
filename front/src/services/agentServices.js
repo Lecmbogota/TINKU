@@ -17,7 +17,7 @@ export async function getmsg() {
   }
 }
 
-export async function sendmsg() {
+export async function sendmsg(text, number) {
   try {
     const response = await api.post(`/sendmsg`, {
       textResponse: text,
@@ -26,6 +26,6 @@ export async function sendmsg() {
     return response.data; // Retorna los datos recibidos del servidor
   } catch (error) {
     // Si ocurre un error, lo maneja aquí
-    throw new Error("Error al obtener nombre de usuario");
+    throw new Error("Error al enviar el mensaje");
   }
 }
