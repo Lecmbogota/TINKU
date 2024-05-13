@@ -106,14 +106,29 @@
             </v-tabs-window-item>
 
             <v-tabs-window-item value="tipificar">
-              <section v-if="optionButton === 'Rechaza'">
+              <section v-if="optionButton === 'tipificacion'" >
+                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
+                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
+                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'NoCalifica'"> No Califica </v-btn>
+                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Agendar'"> Agendar </v-btn>
+              </section>
+              <section  v-if="optionButton === 'acepta'">
                 <v-form v-model="valid" class="m-0 p-0">
                   <v-container class="m-0 p-0">
+  
                     <v-col cols="12" md="12" class="m-1 p-0">
-                      <v-textarea v-model="observation" :rules="observationRules" label="Observación" hide-details required></v-textarea>
+                      <v-text-field v-model="firstname" :counter="10" :rules="nameRules" label="First name" hide-details
+                        required></v-text-field>
                     </v-col>
+  
                     <v-col cols="12" md="12" class="m-1 p-0">
-                      <v-select v-model="rejectionReason" :items="rejectionReasons" label="Motivo de rechazo" hide-details required></v-select>
+                      <v-text-field v-model="lastname" :counter="10" :rules="nameRules" label="Last name" hide-details
+                        required></v-text-field>
+                    </v-col>
+  
+                    <v-col cols="12" md="12" class="m-1 p-0">
+                      <v-text-field v-model="email" :rules="emailRules" label="E-mail" hide-details
+                        required></v-text-field>
                     </v-col>
                     <div class="row m-0 p-0">
                       <div class="col-12 d-flex justify-content-end">
@@ -122,58 +137,14 @@
                         </v-col>
                       </div>
                     </div>
+  
+  
+  
                   </v-container>
                 </v-form>
                 <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'tipificacion'"> volver </v-btn>
-              </section>
-              <section v-else-if="optionButton === 'NoCalifica'">
-                <v-form v-model="valid" class="m-0 p-0">
-                  <v-container class="m-0 p-0">
-                    <v-col cols="12" md="12" class="m-1 p-0">
-                      <v-textarea v-model="observation" :rules="observationRules" label="Observación" hide-details required></v-textarea>
-                    </v-col>
-                    <v-col cols="12" md="12" class="m-1 p-0">
-                      <v-select v-model="noQualificationReason" :items="noQualificationReasons" label="Motivo de no calificación" hide-details required></v-select>
-                    </v-col>
-                    <div class="row m-0 p-0">
-                      <div class="col-12 d-flex justify-content-end">
-                        <v-col cols="12" md="4" sm="6" class="">
-                          <v-btn rounded="xl" class="bg-light-green-accent-2 "> Resolver </v-btn>
-                        </v-col>
-                      </div>
-                    </div>
-                  </v-container>
-                </v-form>
-                <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'tipificacion'"> volver </v-btn>
-              </section>
-              <section v-else-if="optionButton === 'Agendar'">
-                <v-form v-model="valid" class="m-0 p-0">
-                  <v-container class="m-0 p-0">
-                    <v-col cols="12" md="12" class="m-1 p-0">
-                      <v-textarea v-model="observation" :rules="observationRules" label="Observación" hide-details required></v-textarea>
-                    </v-col>
-                    <v-col cols="12" md="12" class="m-1 p-0">
-                      <v-date-picker v-model="selectedDate" label="Fecha" hide-details required></v-date-picker>
-                    </v-col>
-                    <v-col cols="12" md="12" class="m-1 p-0">
-                      <v-time-picker v-model="selectedTime" label="Hora" hide-details required></v-time-picker>
-                    </v-col>
-                    <div class="row m-0 p-0">
-                      <div class="col-12 d-flex justify-content-end">
-                        <v-col cols="12" md="4" sm="6" class="">
-                          <v-btn rounded="xl" class="bg-light-green-accent-2 "> Resolver </v-btn>
-                        </v-col>
-                      </div>
-                    </div>
-                  </v-container>
-                </v-form>
-                <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'tipificacion'"> volver </v-btn>
-              </section>
-              <section v-else>
-                <!-- Agregar aquí lo que se debe mostrar por defecto -->
               </section>
             </v-tabs-window-item>
-            
           </v-tabs-window>
         </v-card-text>
 
