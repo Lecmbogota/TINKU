@@ -47,11 +47,11 @@
           <div v-if="currentContact" class="chat-history">
             <!--listado de burbujas de la conversacion-->
             <div v-for="(message, index) in currentContact.messages" :key="index" class="message"
-            :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
-            <div class="message-content">{{ message.text }}</div>
-          </div>
-          <hr class="m-0 p-0">
-          <!--textarea para enviar un msg-->
+              :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
+              <div class="message-content">{{ message.text }}</div>
+            </div>
+            <hr class="m-0 p-0">
+            <!--textarea para enviar un msg-->
             <div v-if="currentContact" class="chat-input">
               <textarea v-model="newMessage" :rows="numRows" type="text"
                 placeholder="Shift + enter for new line. Comience con '/' para seleccionar una respuesta predefinida."
@@ -106,27 +106,38 @@
             </v-tabs-window-item>
 
             <v-tabs-window-item value="tipificar">
-              <section v-if="optionButton === 'tipificacion'" >
-                <img :src="analisys" alt="analisys" height="100" class="d-inline-block align-text-top" />
-                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
-                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
-                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'NoCalifica'"> No Califica </v-btn>
-                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Agendar'"> Agendar </v-btn>
+              <section class="row" v-if="optionButton === 'tipificacion'">
+                <div class="col-12">
+                  <img :src="analisys" alt="analisys" width="100" class="d-inline-block align-text-top" />
+                </div>
+                <div class="col-6">
+                  <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
+                </div>
+                <div class="col-6">
+                  <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
+                </div>
+                <div class="col-6">
+                  <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'NoCalifica'"> No Califica
+                  </v-btn>
+                </div>
+                <div class="col-6">
+                  <v-btn rounded="xl" width="100" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Agendar'"> Agendar </v-btn>
+                </div>
               </section>
-              <section  v-if="optionButton === 'acepta'">
+              <section v-if="optionButton === 'acepta'">
                 <v-form v-model="valid" class="m-0 p-0">
                   <v-container class="m-0 p-0">
-  
+
                     <v-col cols="12" md="12" class="m-1 p-0">
                       <v-text-field v-model="firstname" :counter="10" :rules="nameRules" label="First name" hide-details
                         required></v-text-field>
                     </v-col>
-  
+
                     <v-col cols="12" md="12" class="m-1 p-0">
                       <v-text-field v-model="lastname" :counter="10" :rules="nameRules" label="Last name" hide-details
                         required></v-text-field>
                     </v-col>
-  
+
                     <v-col cols="12" md="12" class="m-1 p-0">
                       <v-text-field v-model="email" :rules="emailRules" label="E-mail" hide-details
                         required></v-text-field>
@@ -138,9 +149,9 @@
                         </v-col>
                       </div>
                     </div>
-  
-  
-  
+
+
+
                   </v-container>
                 </v-form>
                 <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'tipificacion'"> volver </v-btn>
@@ -241,7 +252,7 @@ export default {
         this.newMessage = '';
       }
     },
-    
+
   },
   watch: {
     contacts: {
