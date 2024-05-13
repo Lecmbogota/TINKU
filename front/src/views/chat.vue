@@ -152,6 +152,7 @@ export default {
       firstname: '',
       lastname: '',
       contacts: [],
+      contactss: [],
       currentContact: null,
       newMessage: ''
     };
@@ -172,41 +173,64 @@ export default {
     }, 5000);
   },
   methods: {
+    adjustTextAreaHeight() {
+      // Ajustar automáticamente la altura del textarea en función del contenido
+      const textarea = this.$refs.textarea;
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    },
+    selectContact(contact) {
+      this.currentContact = contact;
+    },
+    getLastMessage(contact) {
+      const lastMessage = contact.messages[contact.messages.length - 1];
+      if (lastMessage) {
+        if (lastMessage.text.length > 15) {
+          return lastMessage.text.substring(0, 15) + ' ...'; // Agregar "..." si supera las 15 letras
+        } else {
+          return lastMessage.text; // Devolver el mensaje completo si tiene 15 letras o menos
+        }
+      } else {
+        return 'No hay mensajes';
+      }
+    },
     async getAllMsg() {
       try {
         const response = await getmsg();
-        // Actualizar solo si hay cambios
-        if (JSON.stringify(response) !== JSON.stringify(this.contacts)) {
-          this.contacts = response;
-          // Si el contacto actual está seleccionado, actualiza los mensajes
-          if (this.currentContact) {
-            this.selectContact(this.currentContact);
-          }
-        }
+        // Asignar directamente la lista de contactos al arreglo de contacts
+        this.contacts = response;
+        this.contactss = response;
       } catch (error) {
         console.error('Error al obtener usuarios:', error);
       }
     },
-    selectContact(contact) {
-      this.currentContact = contact;
-      // Actualiza los mensajes del contacto seleccionado
-      this.currentContact.messages = this.contacts.find(c => c.id === contact.id)?.messages || [];
+    async smg(text, number) {
+      try {
+
+      } catch (error) {
+        console.error('Error al obtener usuarios:', error);
+      }
     },
+
     async sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         const messageContent = this.newMessage.trim();
+        console.log(messageContent)
         const contactNumber = this.currentContact.phone;
+        console.log(contactNumber)
 
         // Agregar el nuevo mensaje a la lista de mensajes del contacto actual
         this.currentContact.messages.push({ text: messageContent, sender: "Agente" });
 
         // Llamar a la función sendMsg para enviar el mensaje al número del contacto actual
+
         await sendmsg(messageContent, contactNumber);
 
         // Limpiar el cuadro de texto después de enviar el mensaje
         this.newMessage = '';
       }
-    }
+    },
+    
   },
   watch: {
     // Observa cambios en la lista de contactos
@@ -222,7 +246,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 .no-focus-outline {
