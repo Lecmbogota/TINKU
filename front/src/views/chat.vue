@@ -44,12 +44,15 @@
 
             </div>
           </div>
+
           <div v-if="currentContact" class="chat-history">
+            <!--listado de burbujas de la conversacion-->
             <div v-for="(message, index) in currentContact.messages" :key="index" class="message"
-              :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
-              <div class="message-content">{{ message.text }}</div>
-            </div>
-            <hr class="m-0 p-0">
+            :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
+            <div class="message-content">{{ message.text }}</div>
+          </div>
+          <hr class="m-0 p-0">
+          <!--textarea para enviar un msg-->
             <div v-if="currentContact" class="chat-input">
               <textarea v-model="newMessage" :rows="numRows" type="text"
                 placeholder="Shift + enter for new line. Comience con '/' para seleccionar una respuesta predefinida."
@@ -215,10 +218,7 @@ export default {
     async sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         const messageContent = this.newMessage.trim();
-        console.log(messageContent)
         const contactNumber = this.currentContact.phone;
-        console.log(contactNumber)
-
         // Agregar el nuevo mensaje a la lista de mensajes del contacto actual
         this.currentContact.messages.push({ text: messageContent, sender: "Agente" });
 
@@ -233,15 +233,14 @@ export default {
     
   },
   watch: {
-    // Observa cambios en la lista de contactos
     contacts: {
-      handler: function (newVal, oldVal) {
-        // Si el contacto actual está seleccionado, actualiza los mensajes
-        if (this.currentContact) {
-          this.selectContact(this.currentContact);
+      deep: true, // Observa los cambios profundos en el objeto contacts
+      handler(newValue) {
+        // Actualiza el currentContact si es necesario
+        if (this.currentContact && !newValue.find(contact => contact.id === this.currentContact.id)) {
+          this.currentContact = null;
         }
-      },
-      deep: true // Observa cambios profundos en el objeto contacts
+      }
     }
   }
 };
