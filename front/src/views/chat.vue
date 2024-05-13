@@ -206,21 +206,18 @@ setInterval(() => {
     },
     async smg(text, number) {
       try {
-        const response = await sendmsg(text, number);
-        // Asignar directamente la lista de contactos al matriz de contacts
-        this.contacts = response;
-        this.contactss = response;
+        
       } catch (error) {
         console.error('Error al obtener usuarios:', error);
       }
     },
 
-    sendMessage() {
+    async sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         this.currentContact.messages.push({ text: this.newMessage, sender: "Agente" });
-        const mensaje = this.newMessage.trim();
-        const numero = "573196233749"
-        this.smg(mensaje, numero)
+        const mensaje = this.newMessage;
+        const numero = "573196233749";
+        await sendmsg(mensaje, numero);
         this.newMessage = '';
       }
     }
