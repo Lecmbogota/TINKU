@@ -111,22 +111,22 @@
                   <img :src="analisys" alt="analisys"  class="d-inline-block align-text-top w-100" />
                 </div>
                 <div class="col-6 mt-5 text-center">
-                  <v-btn   size="x-large"
+                  <v-btn   size="large"
                   variant="flat"
                   block class="bg-grey-lighten-2 mx-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
                 </div>
                 <div class="col-6 mt-5 text-center">
-                  <v-btn   size="x-large"
+                  <v-btn   size="large"
                   variant="flat"
                   block class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
                 </div>
                 <div class="col-6 mt-5 text-center">
-                  <v-btn   size="x-large"
+                  <v-btn   size="large"
                   variant="flat"
                   block class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Agendar'"> Agendar </v-btn>
                 </div>
                 <div class="col-6 mt-5 text-center">
-                  <v-btn  size="x-large"
+                  <v-btn  size="large"
                   variant="flat"
                   block class="bg-grey-lighten-2 mx-2" @click="optionButton = 'NoCalifica'"> No Califica
                   </v-btn>
