@@ -106,8 +106,11 @@
             </v-tabs-window-item>
 
             <v-tabs-window-item value="Formulario">
-              <div v-show="optionButton === 'tipificacion'">
-                <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'acepta'"> volver </v-btn>
+              <div v-show="optionButton === 'tipificacion'" class="row d-flex justify-content-center">
+                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
+                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Rechaza'"> Rechaza </v-btn>
+                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'NoCalifica'"> No Califica </v-btn>
+                <v-btn rounded="xl" class="bg-grey-lighten-2 mx-2" @click="optionButton = 'Agendar'"> Agendar </v-btn>
               </div>
               <div  v-show="optionButton === 'acepta'">
                 <v-form v-model="valid" class="m-0 p-0">
