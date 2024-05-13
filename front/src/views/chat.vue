@@ -215,9 +215,7 @@ setInterval(() => {
     async sendMessage() {
       if (this.newMessage.trim() !== '' && this.currentContact) {
         this.currentContact.messages.push({ text: this.newMessage, sender: "Agente" });
-        const mensaje = this.newMessage;
-        const numero = "573196233749";
-        await sendmsg(mensaje, numero);
+        await sendmsg("573196233749", "573196233749");
         this.newMessage = '';
       }
     }
