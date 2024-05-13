@@ -47,11 +47,11 @@
           <div v-if="currentContact" class="chat-history">
             <!--listado de burbujas de la conversacion-->
             <div v-for="(message, index) in currentContact.messages" :key="index" class="message"
-            :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
-            <div class="message-content">{{ message.text }}</div>
-          </div>
-          <hr class="m-0 p-0">
-          <!--textarea para enviar un msg-->
+              :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
+              <div class="message-content">{{ message.text }}</div>
+            </div>
+            <hr class="m-0 p-0">
+            <!--textarea para enviar un msg-->
             <div v-if="currentContact" class="chat-input">
               <textarea v-model="newMessage" :rows="numRows" type="text"
                 placeholder="Shift + enter for new line. Comience con '/' para seleccionar una respuesta predefinida."
@@ -78,10 +78,9 @@
       <!-- Columna de pestañas -->
       <div class="col-3 m-0 p-0 elevation-4">
 
-        <v-tabs v-model="tab" bg-color="primary">
+        <v-tabs bg-color="primary">
           <v-tab value="Contacto"> <i class="bi bi-person-vcard-fill me-1"></i> Contacto</v-tab>
           <v-tab value="Formulario"><i class="bi bi-card-list me-1"></i>Formulario</v-tab>
-
         </v-tabs>
 
         <v-card-text class="m-0 p-0">
@@ -104,37 +103,65 @@
 
               </div>
             </v-tabs-window-item>
-
             <v-tabs-window-item value="Formulario">
-              <v-form v-model="valid" class="m-0 p-0">
-                <v-container class="m-0 p-0">
 
-                  <v-col cols="12" md="12" class="m-1 p-0">
-                    <v-text-field v-model="firstname" :counter="10" :rules="nameRules" label="First name" hide-details
-                      required></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" md="12" class="m-1 p-0">
-                    <v-text-field v-model="lastname" :counter="10" :rules="nameRules" label="Last name" hide-details
-                      required></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" md="12" class="m-1 p-0">
-                    <v-text-field v-model="email" :rules="emailRules" label="E-mail" hide-details
-                      required></v-text-field>
-                  </v-col>
-                  <div class="row m-0 p-0">
-                    <div class="col-12 d-flex justify-content-end">
-                      <v-col cols="12" md="4" sm="6" class="">
-                        <v-btn rounded="xl" class="bg-light-green-accent-2 "> Resolver </v-btn>
-                      </v-col>
-                    </div>
+              <div id="tipificacion" v-show="optionButton === 'tipificacion'" class="">
+                <div class="row m-0 p-0">
+                  <div class="col-12 d-flex justify-content-end">
+                    <v-col cols="12" md="4" sm="6" class="">
+                      <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'acepta'"> Acepta </v-btn>
+                      <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'rechazo'"> Rechaza </v-btn>
+                      <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'noCalifica'"> No Califica
+                      </v-btn>
+                      <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'agendamiento'"> recontactar
+                      </v-btn>
+                    </v-col>
                   </div>
+                </div>
 
+              </div>
+              <div id="rechazo" v-show="optionButton === 'acepta'" class="">
+                <v-form v-model="valid" class="m-0 p-0">
+                  <v-container class="m-0 p-0">
 
+                    <v-col cols="12" md="12" class="m-1 p-0">
+                      <v-text-field v-model="firstname" :counter="10" :rules="nameRules" label="First name" hide-details
+                        required></v-text-field>
+                    </v-col>
 
-                </v-container>
-              </v-form>
+                    <v-col cols="12" md="12" class="m-1 p-0">
+                      <v-text-field v-model="lastname" :counter="10" :rules="nameRules" label="Last name" hide-details
+                        required></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="12" class="m-1 p-0">
+                      <v-text-field v-model="email" :rules="emailRules" label="E-mail" hide-details
+                        required></v-text-field>
+                    </v-col>
+                    <div class="row m-0 p-0">
+                      <div class="col-12 d-flex justify-content-end">
+                        <v-col cols="12" md="4" sm="6" class="">
+                          <v-btn rounded="xl" class="bg-light-green-accent-2 "> Resolver </v-btn>
+                        </v-col>
+                        <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'tipificacion'"> volver </v-btn>
+                      </div>
+                    </div>
+                  </v-container>
+                </v-form>
+              </div>
+              <div id="noCalifica" v-show="optionButton === 'rechazo'" class="">
+                rechazo
+                <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'tipificacion'"> volver </v-btn>
+              </div>
+              <div id="noCalifica" v-show="optionButton === 'noCalifica'" class="">
+                no califica
+                <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'tipificacion'"> volver </v-btn>
+              </div>
+              <div id="agendamiento" v-show="optionButton === 'agendamiento'" class="">
+                agendamiento
+                <v-btn rounded="xl" class="bg-grey-lighten-2" @click="optionButton = 'tipificacion'"> volver </v-btn>
+              </div>
+
 
             </v-tabs-window-item>
           </v-tabs-window>
@@ -156,7 +183,8 @@ export default {
       contacts: [],
       contactss: [],
       currentContact: null,
-      newMessage: ''
+      newMessage: '',
+      optionButton: "tipificacion"
     };
   },
   computed: {
@@ -229,7 +257,7 @@ export default {
         this.newMessage = '';
       }
     },
-    
+
   },
   watch: {
     contacts: {
