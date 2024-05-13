@@ -234,15 +234,26 @@ export default {
   },
   watch: {
     contacts: {
-      deep: true, // Observa los cambios profundos en el objeto contacts
-      handler(newValue) {
-        // Actualiza el currentContact si es necesario
-        if (this.currentContact && !newValue.find(contact => contact.id === this.currentContact.id)) {
-          this.currentContact = null;
+      deep: true,
+      handler(newContacts, oldContacts) {
+        // Verifica si hay algún cambio en contacts
+        if (newContacts !== oldContacts) {
+          // Si currentContact no es nulo, selecciona nuevamente el contacto actual
+          if (this.currentContact) {
+            // Encuentra el contacto actual en la lista actualizada de contactos
+            const updatedContact = newContacts.find(contact => contact.id === this.currentContact.id);
+            if (updatedContact) {
+              // Selecciona el contacto actualizado
+              this.selectContact(updatedContact);
+            } else {
+              // Si el contacto actual no está en la lista actualizada, establece currentContact en nulo
+              this.currentContact = null;
+            }
+          }
         }
       }
     }
-  }
+  },
 };
 </script>
 
