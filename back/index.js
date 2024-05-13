@@ -22,7 +22,7 @@ const SECRET_KEY = process.env.SECRET_KEY || "TuCadenaSecreta";
 
 // Configuración de CORS
 const corsOptions = {
-  origin: ["http://localhost:9000","http://201.244.109.231:9000","https://tinkugo.caraballo.pro","http://tinkugo.caraballo.pro"],
+  origin: ["http://localhost:9000","http://201.244.109.231:9000","https://801x8zzp-9000.use2.devtunnels.ms","https://tinkugo.caraballo.pro","http://tinkugo.caraballo.pro"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,

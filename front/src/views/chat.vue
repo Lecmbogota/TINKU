@@ -108,7 +108,7 @@
             <v-tabs-window-item value="tipificar">
               <section class="row" v-if="optionButton === 'tipificacion'">
                 <div class="col-12 mt-4">
-                  <img :src="analisys" alt="analisys"  class="d-inline-block align-text-top w-100" />
+                  <img :src="analisys" alt="analisys"  class="d-inline-block align-text-top w-100 m-5" />
                 </div>
                 <div class="col-6 mt-5 text-center">
                   <v-btn   size="large"
