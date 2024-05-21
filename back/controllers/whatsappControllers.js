@@ -1,13 +1,8 @@
 const fs = require("fs");
-// Crear un archivo de texto
 const logsFileStream = fs.createWriteStream("./logs.txt");
-const { db } = require('../cdb/cdb.connect');
-// Crear una instancia de Console con el flujo de escritura hacia el archivo
 const myConsole = new console.Console(logsFileStream);
-
+const { db } = require('../cdb/cdb.connect');
 const processMessage = require("../shared/processMessage");
-
-
 
 const verifyToken = (req, res) => {
   try {
@@ -15,7 +10,7 @@ const verifyToken = (req, res) => {
     const token = req.query["hub.verify_token"];
     const challenge = req.query["hub.challenge"];
 
-    if (challenge != null && token != null && token == accessToken) {
+    if (challenge != null && token != null && token === accessToken) {
       res.send(challenge);
     } else {
       res.status(400).send();
@@ -49,33 +44,44 @@ const receivedMessage = async (req, res) => {
       myConsole.log("Mensaje: ", text);
 
       if (text !== "") {
-        let contact = contacts.find(c => c.id === number);
-        if (!contact) {
-          // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
+        // Consultamos si el contacto ya existe en la base de datos
+        const contactQuery = `
+          SELECT id, name, phone, messages
+          FROM public.messages
+          WHERE id = $1
+        `;
+        const { rows } = await db.query(contactQuery, [number]);
+
+        let contact;
+        if (rows.length > 0) {
+          // Si el contacto existe, lo recuperamos de la base de datos
+          contact = rows[0];
+        } else {
+          // Si el contacto no existe, lo creamos
           contact = { id: number, name: name, phone: number.toString(), messages: [] };
-          contacts.push(contact);
         }
+
         // Agregamos el mensaje al contacto
         contact.messages.push({ text: text, sender: "Cliente" });
 
         // Convertimos el array de mensajes a JSON
         const messagesJSON = JSON.stringify(contact.messages);
 
-        // Insertar mensaje en la base de datos
+        // Insertar o actualizar el mensaje en la base de datos
         const insertQuery = `
           INSERT INTO public.messages (id, name, phone, messages)
           VALUES ($1, $2, $3, $4)
           ON CONFLICT (id) DO UPDATE
           SET messages = EXCLUDED.messages
         `;
-        
+
         await db.query(insertQuery, [
           contact.id,
           contact.name,
           contact.phone,
           messagesJSON // Pasamos el JSON como un array JSON válido
         ]);
-        
+
         myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: text });
       }
 
@@ -90,15 +96,12 @@ const receivedMessage = async (req, res) => {
   }
 };
 
-
-
-
 const getReceivedMessages = async (req, res) => {
   try {
-    // Consulta para obtener los contactos con sus mensajes de la tabla messages
+    // Consulta para obtener todos los contactos con sus mensajes de la tabla messages
     const query = `
       SELECT id, name, phone, messages
-      FROM messages
+      FROM public.messages
     `;
     
     const result = await db.query(query);
@@ -126,21 +129,33 @@ const sendMsg = async (req, res) => {
 
     if (textResponse !== "") {
       const parsedNumber = parseInt(number, 10);
-      let contact = contacts.find(c => c.id === parsedNumber);
-      if (!contact) {
-        // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
+
+      // Consultamos si el contacto ya existe en la base de datos
+      const contactQuery = `
+        SELECT id, name, phone, messages
+        FROM public.messages
+        WHERE id = $1
+      `;
+      const { rows } = await db.query(contactQuery, [parsedNumber]);
+
+      let contact;
+      if (rows.length > 0) {
+        // Si el contacto existe, lo recuperamos de la base de datos
+        contact = rows[0];
+      } else {
+        // Si el contacto no existe, lo creamos
         contact = { id: parsedNumber, name: "Agente", phone: number.toString(), messages: [] };
-        contacts.push(contact);
       }
+
       // Agregamos el mensaje al contacto
       contact.messages.push({ text: textResponse, sender: "Agente" });
 
       // Convertimos el array de mensajes a JSONB
       const messagesJSON = JSON.stringify(contact.messages);
 
-      // Insertar mensaje en la base de datos
+      // Insertar o actualizar el mensaje en la base de datos
       const insertQuery = `
-        INSERT INTO messages (id, name, phone, messages)
+        INSERT INTO public.messages (id, name, phone, messages)
         VALUES ($1, $2, $3, $4)
         ON CONFLICT (id) DO UPDATE
         SET messages = messages.messages || EXCLUDED.messages
@@ -162,6 +177,7 @@ const sendMsg = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error al enviar el mensaje' });
   }
 };
+
 function GetTextUser(messages) {
   let text = "";
   const typeMessage = messages["type"];
