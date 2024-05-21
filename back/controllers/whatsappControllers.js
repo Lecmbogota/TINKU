@@ -62,10 +62,19 @@ const receivedMessage = async (req, res) => {
         }
 
         // Agregamos el mensaje al contacto
-        contact.messages.push({ text: text, sender: "Cliente" });
+        const currentTime = new Date();
+        const formattedTime = formatTime(currentTime); // Formato hh:mm a
+        const formattedDate = formatDate(currentTime); // Formato dd/mm/yyyy
+
+        contact.messages.push({ text: text, sender: "Cliente", horaMsg: formattedTime, fechaMsg: formattedDate });
 
         // Convertimos el array de mensajes a JSONB
-        const messagesJSON = contact.messages.map(msg => ({ text: msg.text, sender: msg.sender }));
+        const messagesJSON = contact.messages.map(msg => ({
+          text: msg.text,
+          sender: msg.sender,
+          horaMsg: msg.horaMsg,
+          fechaMsg: msg.fechaMsg
+        }));
 
         // Insertar o actualizar el mensaje en la base de datos
         const insertQuery = `
@@ -82,7 +91,7 @@ const receivedMessage = async (req, res) => {
           messagesJSON // Pasamos el JSON como un array JSONB válido
         ]);
 
-        myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: text });
+        myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: text, time: formattedTime, date: formattedDate });
       }
 
       processMessage.Process(text, number);
@@ -123,10 +132,19 @@ const sendMsg = async (req, res) => {
       }
 
       // Agregamos el mensaje al contacto
-      contact.messages.push({ text: textResponse, sender: "Agente" });
+      const currentTime = new Date();
+      const formattedTime = formatTime(currentTime); // Formato hh:mm a
+      const formattedDate = formatDate(currentTime); // Formato dd/mm/yyyy
+
+      contact.messages.push({ text: textResponse, sender: "Agente", horaMsg: formattedTime, fechaMsg: formattedDate });
 
       // Convertimos el array de mensajes a JSONB
-      const messagesJSON = contact.messages.map(msg => ({ text: msg.text, sender: msg.sender }));
+      const messagesJSON = contact.messages.map(msg => ({
+        text: msg.text,
+        sender: msg.sender,
+        horaMsg: msg.horaMsg,
+        fechaMsg: msg.fechaMsg
+      }));
 
       // Insertar o actualizar el mensaje en la base de datos
       const insertQuery = `
@@ -143,7 +161,7 @@ const sendMsg = async (req, res) => {
         messagesJSON // Enviamos el JSON como un array JSONB válido
       ]);
 
-      myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: textResponse });
+      myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: textResponse, time: formattedTime, date: formattedDate });
     }
 
     res.status(200).json({ success: true, message: 'Mensaje enviado correctamente', textResponse, number });
@@ -195,5 +213,18 @@ const getReceivedMessages = async (req, res) => {
     res.status(500).send("Error en el servidor");
   }
 };
+
+// Función para formatear la hora en hh:mm a
+function formatTime(date) {
+  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Función para formatear la fecha en dd/mm/yyyy
+function formatDate(date) {
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
 
 module.exports = { verifyToken, receivedMessage, getReceivedMessages, sendMsg };
