@@ -8,7 +8,9 @@ const myConsole = new console.Console(logsFileStream);
 const processMessage = require("../shared/processMessage");
 
 // Lista de contactos
-let contacts = [];
+let contacts = [
+  { id: 573196233749, name: "Luis Caraballo", phone: "573196233749", messages: [] }
+];
 
 const verifyToken = (req, res) => {
   try {
@@ -39,9 +41,9 @@ const receivedMessage = (req, res) => {
       const contactsName = contactsObject[0];
       const messages = messageObject[0];
       const profile = contactsName["profile"]
-      let name = profile["name"]
+      let name = proc
 
-      myConsole.log("nombre del perfil del cliente: ", name);
+      myConsole.log("Profile: ", profile);
 
       let number = parseInt(messages["from"]); // Convertir número de teléfono a entero
       myConsole.log("Numero: ", number);
@@ -53,7 +55,7 @@ const receivedMessage = (req, res) => {
         let contact = contacts.find(c => c.id === number);
         if (!contact) {
           // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
-          contact = { id: number, name: name, phone: number.toString(), messages: [] };
+          contact = { id: number, name: number, phone: number.toString(), messages: [] };
           contacts.push(contact);
         }
         // Agregamos el mensaje al contacto
@@ -92,6 +94,7 @@ const sendMsg = (req, res) => {
         // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
         contact = { id: parsedNumber, name: "maria", phone: number.toString(), messages: [] };
         contacts.push(contact);
+        myConsole.log(contacts)
       }
       // Agregamos el mensaje al contacto
       contact.messages.push({ text: textResponse, sender: "Agente" }); // Usa textResponse en lugar de text
