@@ -64,8 +64,8 @@ const receivedMessage = async (req, res) => {
         // Agregamos el mensaje al contacto
         contact.messages.push({ text: text, sender: "Cliente" });
 
-        // Convertimos el array de mensajes a JSON
-        const messagesJSON = JSON.stringify(contact.messages);
+        // Convertimos el array de mensajes a JSONB
+        const messagesJSON = contact.messages.map(msg => ({ text: msg.text, sender: msg.sender }));
 
         // Insertar o actualizar el mensaje en la base de datos
         const insertQuery = `
@@ -151,21 +151,21 @@ const sendMsg = async (req, res) => {
       contact.messages.push({ text: textResponse, sender: "Agente" });
 
       // Convertimos el array de mensajes a JSONB
-      const messagesJSON = JSON.stringify(contact.messages);
+      const messagesJSON = contact.messages.map(msg => ({ text: msg.text, sender: msg.sender }));
 
       // Insertar o actualizar el mensaje en la base de datos
       const insertQuery = `
         INSERT INTO public.messages (id, name, phone, messages)
         VALUES ($1, $2, $3, $4)
         ON CONFLICT (id) DO UPDATE
-        SET messages = messages.messages || EXCLUDED.messages
+        SET messages = messages || EXCLUDED.messages
       `;
 
       await db.query(insertQuery, [
         contact.id,
         contact.name,
         contact.phone,
-        [ { text: textResponse, sender: "Agente" } ] // Envolver el objeto en un array
+        messagesJSON // Enviamos el JSON como un array JSONB válido
       ]);
 
       myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: textResponse });
