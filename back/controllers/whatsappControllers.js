@@ -8,9 +8,7 @@ const myConsole = new console.Console(logsFileStream);
 const processMessage = require("../shared/processMessage");
 
 // Lista de contactos
-let contacts = [
-  { id: 573196233749, name: "Luis Caraballo", phone: "573196233749", messages: [] }
-];
+let contacts = [];
 
 const verifyToken = (req, res) => {
   try {
@@ -55,7 +53,7 @@ const receivedMessage = (req, res) => {
         let contact = contacts.find(c => c.id === number);
         if (!contact) {
           // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
-          contact = { id: number, name: number, phone: number.toString(), messages: [] };
+          contact = { id: number, name: name, phone: number.toString(), messages: [] };
           contacts.push(contact);
         }
         // Agregamos el mensaje al contacto
