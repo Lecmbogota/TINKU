@@ -69,11 +69,14 @@ const receivedMessage = async (req, res) => {
           SET messages = messages.messages || EXCLUDED.messages
         `;
         
+        // Convertimos el array de mensajes a JSON
+        const messagesJSON = JSON.stringify(contact.messages);
+        
         await db.query(insertQuery, [
           contact.id,
           contact.name,
           contact.phone,
-          JSON.stringify(contact.messages) // Convertimos el array de mensajes a JSON
+          [messagesJSON] // Envolver el JSON en un array para que PostgreSQL lo interprete correctamente
         ]);
         
         myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: text });
@@ -89,6 +92,7 @@ const receivedMessage = async (req, res) => {
     res.status(500).send("Error en el servidor");
   }
 };
+
 
 
 const getReceivedMessages = (req, res) => {
@@ -110,7 +114,7 @@ const sendMsg = async (req, res) => {
       let contact = contacts.find(c => c.id === parsedNumber);
       if (!contact) {
         // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
-        contact = { id: parsedNumber, name: "maria", phone: number.toString(), messages: [] };
+        contact = { id: parsedNumber, name: "Agente", phone: number.toString(), messages: [] };
         console.log(contact)
         myConsole.log(contact)
         contacts.push(contact);
