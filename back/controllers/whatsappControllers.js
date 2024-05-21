@@ -101,19 +101,21 @@ const sendMsg = async (req, res) => {
       contact.messages.push({ text: textResponse, sender: "Agente" }); // Usa textResponse en lugar de text
 
       // Inserta el mensaje en la base de datos
+// Inserta el mensaje en la base de datos
 const insertQuery = `
-INSERT INTO messages (id, name, phone, messages)
-VALUES ($1, $2, $3, $4)
-ON CONFLICT (id) DO UPDATE
-SET messages = public.messages.messages || $5
+  INSERT INTO messages (id, name, phone, messages)
+  VALUES ($1, $2, $3, $4)
+  ON CONFLICT (id) DO UPDATE
+  SET messages = messages.messages || $4
 `;
 
 await db.query(insertQuery, [
-contact.id,
-contact.name,
-contact.phone,
-JSON.stringify({ text: textResponse, sender: "Agente" }) // Envolviendo el objeto en un array
+  contact.id,
+  contact.name,
+  contact.phone,
+  [{ text: textResponse, sender: "Agente" }] // Envolver el objeto en un array
 ]);
+
 
     }
 
