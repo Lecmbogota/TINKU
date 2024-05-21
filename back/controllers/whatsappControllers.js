@@ -69,6 +69,7 @@ const receivedMessage = (req, res) => {
 };
 
 const getReceivedMessages = (req, res) => {
+  myConsole.log("esto el lo que llega de meta: ",req.body)
   try {
     res.json( contacts );
   } catch (error) {
