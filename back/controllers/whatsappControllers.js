@@ -29,7 +29,7 @@ const verifyToken = (req, res) => {
   }
 };
 
-const receivedMessage = (req, res) => {
+const receivedMessage = async (req, res) => {
   try {
     const entry = req.body["entry"][0];
     const changes = entry["changes"][0];
@@ -40,8 +40,8 @@ const receivedMessage = (req, res) => {
     if (messageObject && messageObject.length > 0) {
       const contactsName = contactsObject[0];
       const messages = messageObject[0];
-      const profile = contactsName["profile"]
-      let name = profile["name"]
+      const profile = contactsName["profile"];
+      const name = profile ? profile["name"] : ""; // Aseguramos que name tenga un valor válido
 
       myConsole.log("Profile: ", name);
 
@@ -51,7 +51,7 @@ const receivedMessage = (req, res) => {
       const text = GetTextUser(messages);
       myConsole.log("Mensaje: ", text);
 
-      if(text !== ""){
+      if (text !== "") {
         let contact = contacts.find(c => c.id === number);
         if (!contact) {
           // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
@@ -60,10 +60,27 @@ const receivedMessage = (req, res) => {
         }
         // Agregamos el mensaje al contacto
         contact.messages.push({ text: text, sender: "Cliente" });
-      }
-      processMessage.Process(text, number)
 
-      myConsole.log("Contactos: ", contacts);
+        // Insertar mensaje en la base de datos
+        const insertQuery = `
+          INSERT INTO messages (id, name, phone, messages)
+          VALUES ($1, $2, $3, $4)
+          ON CONFLICT (id) DO UPDATE
+          SET messages = messages.messages || EXCLUDED.messages
+        `;
+        
+        await db.query(insertQuery, [
+          contact.id,
+          contact.name,
+          contact.phone,
+          JSON.stringify(contact.messages) // Convertimos el array de mensajes a JSON
+        ]);
+        
+        myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: text });
+      }
+
+      processMessage.Process(text, number);
+      myConsole.log("Contactos actualizados: ", contacts);
     }
 
     res.send("EVENT_RECEIVED");
@@ -72,6 +89,7 @@ const receivedMessage = (req, res) => {
     res.status(500).send("Error en el servidor");
   }
 };
+
 
 const getReceivedMessages = (req, res) => {
   try {
