@@ -7,10 +7,7 @@ const myConsole = new console.Console(logsFileStream);
 
 const processMessage = require("../shared/processMessage");
 
-// Lista de contactos
-let contacts = [
-  { id: 573196233749, name: "Luis Caraballo", phone: "573196233749", messages: [] }
-];
+
 
 const verifyToken = (req, res) => {
   try {
@@ -95,14 +92,31 @@ const receivedMessage = async (req, res) => {
 
 
 
-const getReceivedMessages = (req, res) => {
+const getReceivedMessages = async (req, res) => {
   try {
-    res.json( contacts );
+    // Consulta para obtener los contactos con sus mensajes de la tabla messages
+    const query = `
+      SELECT id, name, phone, messages
+      FROM messages
+    `;
+    
+    const result = await db.query(query);
+
+    // Mapeamos los resultados para darles el formato esperado
+    const contacts = result.rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      phone: row.phone,
+      messages: row.messages
+    }));
+
+    res.json(contacts);
   } catch (error) {
     console.error("Error al obtener los mensajes recibidos:", error);
     res.status(500).send("Error en el servidor");
   }
 };
+
 const sendMsg = async (req, res) => {
   try {
     const { textResponse, number } = req.body; // Suponiendo que el mensaje y el número se envían en el cuerpo de la solicitud
