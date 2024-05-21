@@ -7,7 +7,7 @@
         <hr class="m-0">
         <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
           :class="{ 'active': contact === currentContact }" class="contact">
-          <div class="avatar">{{ contact.name.charAt(0) }}</div>
+          <div class="avatar">{{ contact.name && contact.name.length > 0 ? contact.name.charAt(0) : contact.name }}</div>
           <div class="contact-details">
             <div class="row">
               <div class="col-12 ">
@@ -35,7 +35,7 @@
           <div v-if="currentContact" class="chat-header">
             <div class="row d-flex align-items-center">
               <div class="col-auto m-0 p-0">
-                <div class="avatar-2">{{ currentContact.name.charAt(0) }}</div>
+                <div class="avatar-2">{{ currentContact.name && currentContact.name.length > 0 ? currentContact.name.charAt(0) : currentContact.name }}</div>
               </div>
               <div class="col m-0 p-0">
                 <h4>{{ currentContact.name }}</h4>
@@ -53,7 +53,7 @@
               :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
               <div class="message-container"
                 :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
-                <div v-if="message.sender === 'Cliente'" class="avatar-cliente">{{ currentContact.name.charAt(0) }}
+                <div v-if="message.sender === 'Cliente'" class="avatar-cliente">{{ currentContact.name && currentContact.name.length > 0 ? contcurrentContactact.name.charAt(0) : currentContact.name }}
                 </div>
                 <div class="message-content">{{ message.text }}</div>
                 <div v-if="message.sender === 'Agente'" class="avatar-agente"><i class="bi bi-headset"></i></div>
@@ -108,7 +108,7 @@
 
                 <div class="row m-0 p-0">
                   <div class="col-12 d-flex justify-content-center">
-                    <div class="avatar-3">{{ currentContact.name.charAt(0) }}</div>
+                    <div class="avatar-3">{{ currentContact.name && currentContact.name.length > 0 ? currentContact.name.charAt(0) : currentContact.name }}</div>
                   </div>
                 </div>
                 <div class="row m-0 p-0">
