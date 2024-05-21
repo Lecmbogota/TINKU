@@ -41,8 +41,9 @@ const receivedMessage = (req, res) => {
       const contactsName = contactsObject[0];
       const messages = messageObject[0];
       const profile = contactsName["profile"]
+      let name = profile["name"]
 
-      myConsole.log("Profile: ", profile);
+      myConsole.log("nombre del perfil del cliente: ", name);
 
       let number = parseInt(messages["from"]); // Convertir número de teléfono a entero
       myConsole.log("Numero: ", number);
