@@ -21,11 +21,7 @@ function Process(textUser, number) {
     var model = whatsappModel.MessageText("todo bien y tu?", number);
     models.push(model);
   }
-  else if (textUser.includes("amor")) {
-    // Despedida
-    var model = whatsappModel.MessageText("adriana, santiago y sebastian", number);
-    models.push(model);
-  }
+  
 
   else{
     // No entiende el mensaje del usuario
