@@ -112,8 +112,7 @@ await db.query(insertQuery, [
 contact.id,
 contact.name,
 contact.phone,
-[], // Array inicial vacío para nuevos contactos
-JSON.stringify([{ text: textResponse, sender: "Agente" }]) // Envolviendo el objeto en un array
+JSON.stringify({ text: textResponse, sender: "Agente" }) // Envolviendo el objeto en un array
 ]);
 
     }
