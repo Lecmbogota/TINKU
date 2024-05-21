@@ -94,6 +94,7 @@ const sendMsg = (req, res) => {
         // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
         contact = { id: parsedNumber, name: "maria", phone: number.toString(), messages: [] };
         contacts.push(contact);
+        myConsole.log("mensaje enviado: ", contact)
       }
       // Agregamos el mensaje al contacto
       contact.messages.push({ text: textResponse, sender: "Agente" }); // Usa textResponse en lugar de text
