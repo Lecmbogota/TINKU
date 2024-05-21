@@ -30,16 +30,20 @@ const verifyToken = (req, res) => {
 };
 
 const receivedMessage = (req, res) => {
-  myConsole.log("esto el lo que llega de meta: ",req.body)
   try {
     const entry = req.body["entry"][0];
     const changes = entry["changes"][0];
     const value = changes["value"];
     const messageObject = value["messages"];
+    const contactsObject = value["contacts"];
     
     if (messageObject && messageObject.length > 0) {
+      const contactsName = contactsObject[0];
       const messages = messageObject[0];
-      
+      const profile = contactsName["profile"]
+
+      myConsole.log("Profile: ", profile);
+
       let number = parseInt(messages["from"]); // Convertir número de teléfono a entero
       myConsole.log("Numero: ", number);
 
@@ -69,7 +73,6 @@ const receivedMessage = (req, res) => {
 };
 
 const getReceivedMessages = (req, res) => {
-  myConsole.log("esto el lo que llega de meta: ",req.body)
   try {
     res.json( contacts );
   } catch (error) {
