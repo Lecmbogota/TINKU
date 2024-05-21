@@ -41,9 +41,9 @@ const receivedMessage = (req, res) => {
       const contactsName = contactsObject[0];
       const messages = messageObject[0];
       const profile = contactsName["profile"]
-      let name = proc
+      let name = profile["name"]
 
-      myConsole.log("Profile: ", profile);
+      myConsole.log("Profile: ", name);
 
       let number = parseInt(messages["from"]); // Convertir número de teléfono a entero
       myConsole.log("Numero: ", number);
@@ -94,7 +94,6 @@ const sendMsg = (req, res) => {
         // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
         contact = { id: parsedNumber, name: "maria", phone: number.toString(), messages: [] };
         contacts.push(contact);
-        myConsole.log(contact);
       }
       // Agregamos el mensaje al contacto
       contact.messages.push({ text: textResponse, sender: "Agente" }); // Usa textResponse en lugar de text
