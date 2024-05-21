@@ -30,7 +30,7 @@ const verifyToken = (req, res) => {
 };
 
 const receivedMessage = (req, res) => {
-  myConsole.log("esto el lo que llega de meta: ",req)
+  myConsole.log("esto el lo que llega de meta: ",req.body)
   try {
     const entry = req.body["entry"][0];
     const changes = entry["changes"][0];
