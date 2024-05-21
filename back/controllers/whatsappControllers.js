@@ -93,7 +93,7 @@ const sendMsg = async (req, res) => {
 
       // Inserta el mensaje en la base de datos
       const insertQuery = `
-        INSERT INTO public.messages (id, name, phone, messages)
+        INSERT INTO messages (id, name, phone, messages)
         VALUES ($1, $2, $3, $4)
         ON CONFLICT (id) DO UPDATE
         SET messages = array_append(messages, $5)
