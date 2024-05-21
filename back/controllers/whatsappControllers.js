@@ -1,11 +1,16 @@
 const fs = require("fs");
-const { db }  = require('../cdb/cdb.connect'); // Asegúrate de que el archivo db.js contiene la configuración de la conexión
+const { db } = require("../cdb/cdb.connect"); // Asegúrate de que el archivo db.js contiene la configuración de la conexión
 const logsFileStream = fs.createWriteStream("./logs.txt");
 const myConsole = new console.Console(logsFileStream);
 const processMessage = require("../shared/processMessage");
 
 let contacts = [
-  { id: 573196233749, name: "Luis Caraballo", phone: "573196233749", messages: [] }
+  {
+    id: 573196233749,
+    name: "Luis Caraballo",
+    phone: "573196233749",
+    messages: [],
+  },
 ];
 
 const verifyToken = (req, res) => {
@@ -32,7 +37,7 @@ const receivedMessage = (req, res) => {
     const value = changes["value"];
     const messageObject = value["messages"];
     const contactsObject = value["contacts"];
-    
+
     if (messageObject && messageObject.length > 0) {
       const contactsName = contactsObject[0];
       const messages = messageObject[0];
@@ -48,9 +53,14 @@ const receivedMessage = (req, res) => {
       myConsole.log("Mensaje: ", text);
 
       if (text !== "") {
-        let contact = contacts.find(c => c.id === number);
+        let contact = contacts.find((c) => c.id === number);
         if (!contact) {
-          contact = { id: number, name: number, phone: number.toString(), messages: [] };
+          contact = {
+            id: number,
+            name: number,
+            phone: number.toString(),
+            messages: [],
+          };
           contacts.push(contact);
         }
         contact.messages.push({ text: text, sender: "Cliente" });
@@ -84,34 +94,47 @@ const sendMsg = async (req, res) => {
 
     if (textResponse !== "") {
       const parsedNumber = parseInt(number, 10);
-      let contact = contacts.find(c => c.id === parsedNumber);
+      let contact = contacts.find((c) => c.id === parsedNumber);
       if (!contact) {
-        contact = { id: parsedNumber, name: "maria", phone: number.toString(), messages: [] };
+        contact = {
+          id: parsedNumber,
+          name: "maria",
+          phone: number.toString(),
+          messages: [],
+        };
         contacts.push(contact);
       }
       contact.messages.push({ text: textResponse, sender: "Agente" });
-
       // Inserta el mensaje en la base de datos
       const insertQuery = `
-        INSERT INTO messages (id, name, phone, messages)
-        VALUES ($1, $2, $3, $4)
-        ON CONFLICT (id) DO UPDATE
-        SET messages = array_append(messages, $5)
-      `;
+INSERT INTO messages (id, name, phone, messages)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT (id) DO UPDATE
+SET messages = public.messages.messages || $5
+`;
 
       await db.query(insertQuery, [
         contact.id,
         contact.name,
         contact.phone,
-        [],
-        JSON.stringify({ text: textResponse, sender: "Agente" })
+        [], // Array inicial vacío para nuevos contactos
+        JSON.stringify({ text: textResponse, sender: "Agente" }),
       ]);
     }
 
-    res.status(200).json({ success: true, message: 'Mensaje enviado correctamente', textResponse, number });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Mensaje enviado correctamente",
+        textResponse,
+        number,
+      });
   } catch (error) {
-    console.error('Error al enviar el mensaje:', error);
-    res.status(500).json({ success: false, message: 'Error al enviar el mensaje' });
+    console.error("Error al enviar el mensaje:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al enviar el mensaje" });
   }
 };
 
@@ -123,7 +146,7 @@ function GetTextUser(messages) {
   } else if (typeMessage === "interactive") {
     const interactiveObject = messages["interactive"];
     const typeInteractive = interactiveObject["type"];
-    
+
     if (typeInteractive === "button_reply") {
       text = interactiveObject["button_reply"]["title"];
     } else if (typeInteractive === "list_reply") {
