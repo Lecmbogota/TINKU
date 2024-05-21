@@ -4,6 +4,9 @@ const myConsole = new console.Console(logsFileStream);
 const { db } = require('../cdb/cdb.connect');
 const processMessage = require("../shared/processMessage");
 
+// Definimos un array para almacenar los contactos
+let contacts = [];
+
 const verifyToken = (req, res) => {
   try {
     const accessToken = "960782506041989";
@@ -59,6 +62,7 @@ const receivedMessage = async (req, res) => {
         } else {
           // Si el contacto no existe, lo creamos
           contact = { id: number, name: name, phone: number.toString(), messages: [] };
+          contacts.push(contact); // Agregamos el contacto al array de contactos
         }
 
         // Agregamos el mensaje al contacto
@@ -79,7 +83,7 @@ const receivedMessage = async (req, res) => {
           contact.id,
           contact.name,
           contact.phone,
-          messagesJSON // Pasamos el JSON como un array JSON válido
+          messagesJSON // Pasamos el JSON como un array JSONB válido
         ]);
 
         myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: text });
@@ -145,6 +149,7 @@ const sendMsg = async (req, res) => {
       } else {
         // Si el contacto no existe, lo creamos
         contact = { id: parsedNumber, name: "Agente", phone: number.toString(), messages: [] };
+        contacts.push(contact); // Agregamos el contacto al array de contactos
       }
 
       // Agregamos el mensaje al contacto
