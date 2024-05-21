@@ -23,6 +23,7 @@ export async function sendmsg(text, number) {
       textResponse: text,
       number: number,
     });
+    console.log(response);
     return response.data; // Retorna los datos recibidos del servidor
   } catch (error) {
     // Si ocurre un error, lo maneja aquí
