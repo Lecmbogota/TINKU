@@ -163,7 +163,7 @@ const sendMsg = async (req, res) => {
         INSERT INTO public.messages (id, name, phone, messages)
         VALUES ($1, $2, $3, $4)
         ON CONFLICT (id) DO UPDATE
-        SET messages = messages || EXCLUDED.messages
+        SET messages = EXCLUDED.messages
       `;
 
       await db.query(insertQuery, [
@@ -200,5 +200,5 @@ function GetTextUser(messages) {
   }
   return text;
 };
-//as
+
 module.exports = { verifyToken, receivedMessage, getReceivedMessages, sendMsg };
