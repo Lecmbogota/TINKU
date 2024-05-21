@@ -200,5 +200,5 @@ function GetTextUser(messages) {
   }
   return text;
 };
-
+//as
 module.exports = { verifyToken, receivedMessage, getReceivedMessages, sendMsg };
