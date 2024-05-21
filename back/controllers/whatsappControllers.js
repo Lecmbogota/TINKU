@@ -55,7 +55,7 @@ const receivedMessage = (req, res) => {
         let contact = contacts.find(c => c.id === number);
         if (!contact) {
           // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
-          contact = { id: number, name: number, phone: number.toString(), messages: [] };
+          contact = { id: number, name: name, phone: number.toString(), messages: [] };
           contacts.push(contact);
         }
         // Agregamos el mensaje al contacto
