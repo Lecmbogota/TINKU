@@ -162,18 +162,6 @@ const sendMsg = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error al enviar el mensaje' });
   }
 };
-
-
-
-    }
-
-    res.status(200).json({ success: true, message: 'Mensaje enviado correctamente', textResponse, number });
-  } catch (error) {
-    console.error('Error al enviar el mensaje:', error);
-    res.status(500).json({ success: false, message: 'Error al enviar el mensaje' });
-  }
-};
-
 function GetTextUser(messages) {
   let text = "";
   const typeMessage = messages["type"];
