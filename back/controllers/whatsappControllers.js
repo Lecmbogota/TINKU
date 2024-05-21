@@ -58,22 +58,22 @@ const receivedMessage = async (req, res) => {
         // Agregamos el mensaje al contacto
         contact.messages.push({ text: text, sender: "Cliente" });
 
-        // Insertar mensaje en la base de datos
-        const insertQuery = `
-          INSERT INTO messages (id, name, phone, messages)
-          VALUES ($1, $2, $3, $4)
-          ON CONFLICT (id) DO UPDATE
-          SET messages = messages.messages || EXCLUDED.messages
-        `;
-        
         // Convertimos el array de mensajes a JSON
         const messagesJSON = JSON.stringify(contact.messages);
+
+        // Insertar mensaje en la base de datos
+        const insertQuery = `
+          INSERT INTO public.messages (id, name, phone, messages)
+          VALUES ($1, $2, $3, $4)
+          ON CONFLICT (id) DO UPDATE
+          SET messages = EXCLUDED.messages
+        `;
         
         await db.query(insertQuery, [
           contact.id,
           contact.name,
           contact.phone,
-          [messagesJSON] // Envolver el JSON en un array para que PostgreSQL lo interprete correctamente
+          messagesJSON // Pasamos el JSON como un array JSON válido
         ]);
         
         myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: text });
@@ -89,6 +89,7 @@ const receivedMessage = async (req, res) => {
     res.status(500).send("Error en el servidor");
   }
 };
+
 
 
 
@@ -129,28 +130,39 @@ const sendMsg = async (req, res) => {
       if (!contact) {
         // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
         contact = { id: parsedNumber, name: "Agente", phone: number.toString(), messages: [] };
-        console.log(contact)
-        myConsole.log(contact)
         contacts.push(contact);
       }
       // Agregamos el mensaje al contacto
-      contact.messages.push({ text: textResponse, sender: "Agente" }); // Usa textResponse en lugar de text
+      contact.messages.push({ text: textResponse, sender: "Agente" });
 
-      // Inserta el mensaje en la base de datos
-// Inserta el mensaje en la base de datos
-const insertQuery = `
-  INSERT INTO messages (id, name, phone, messages)
-  VALUES ($1, $2, $3, $4)
-  ON CONFLICT (id) DO UPDATE
-  SET messages = messages.messages || $4
-`;
+      // Convertimos el array de mensajes a JSONB
+      const messagesJSON = JSON.stringify(contact.messages);
 
-await db.query(insertQuery, [
-  contact.id,
-  contact.name,
-  contact.phone,
-  [{ text: textResponse, sender: "Agente" }] // Envolver el objeto en un array
-]);
+      // Insertar mensaje en la base de datos
+      const insertQuery = `
+        INSERT INTO messages (id, name, phone, messages)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (id) DO UPDATE
+        SET messages = messages.messages || EXCLUDED.messages
+      `;
+
+      await db.query(insertQuery, [
+        contact.id,
+        contact.name,
+        contact.phone,
+        [ { text: textResponse, sender: "Agente" } ] // Envolver el objeto en un array
+      ]);
+
+      myConsole.log("Mensaje insertado en la base de datos:", { id: contact.id, text: textResponse });
+    }
+
+    res.status(200).json({ success: true, message: 'Mensaje enviado correctamente', textResponse, number });
+  } catch (error) {
+    console.error('Error al enviar el mensaje:', error);
+    res.status(500).json({ success: false, message: 'Error al enviar el mensaje' });
+  }
+};
+
 
 
     }
