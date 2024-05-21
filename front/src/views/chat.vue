@@ -6,6 +6,7 @@
         <h4 class="text-center">Contactos</h4>
         <hr class="m-0">
         <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
+        
           :class="{ 'active': contact === currentContact }" class="contact">
           <div class="avatar">{{ contact.name && contact.name.length > 0 ? contact.name.charAt(0) : contact.name }}</div>
           <div class="contact-details">
@@ -19,7 +20,7 @@
                   getLastMessage(contact) }}</a>
               </div>
               <div class="col-12 d-flex justify-content-end align-items-end ">
-                <a style="font-size: 10px; margin-right: 8px; margin-top: -3px;"><strong>Última vez: </strong>20:33</a>
+                <a style="font-size: 10px; margin-right: 8px; margin-top: -3px;"><strong>Última vez: </strong>{{ contact }}</a>
               </div>
 
             </div>
