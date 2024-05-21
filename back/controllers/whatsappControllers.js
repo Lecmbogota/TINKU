@@ -76,7 +76,6 @@ const receivedMessage = (req, res) => {
 const getReceivedMessages = (req, res) => {
   try {
     res.json( contacts );
-    myConsole.log(res.json( contacts ))
   } catch (error) {
     console.error("Error al obtener los mensajes recibidos:", error);
     res.status(500).send("Error en el servidor");
@@ -94,8 +93,9 @@ const sendMsg = (req, res) => {
       if (!contact) {
         // Si el contacto no existe, lo creamos y lo agregamos a la lista de contactos
         contact = { id: parsedNumber, name: "maria", phone: number.toString(), messages: [] };
+        console.log(contact)
+        myConsole.log(contact)
         contacts.push(contact);
-        myConsole.log("mensaje enviado: ", contact)
       }
       // Agregamos el mensaje al contacto
       contact.messages.push({ text: textResponse, sender: "Agente" }); // Usa textResponse en lugar de text
