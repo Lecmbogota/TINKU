@@ -18,4 +18,4 @@ const db = new Pool({
     .catch((err) => console.error("Error de conexión a PostgreSQL", err));
   
 
-module.exports = pool;
+module.exports = {pool};

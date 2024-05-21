@@ -1,5 +1,5 @@
 const fs = require("fs");
-const pool = require('../cdb/cdb.connect'); // Asegúrate de que el archivo db.js contiene la configuración de la conexión
+const { pool }  = require('../cdb/cdb.connect'); // Asegúrate de que el archivo db.js contiene la configuración de la conexión
 const logsFileStream = fs.createWriteStream("./logs.txt");
 const myConsole = new console.Console(logsFileStream);
 const processMessage = require("../shared/processMessage");
