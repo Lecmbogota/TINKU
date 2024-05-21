@@ -1,11 +1,8 @@
 const fs = require("fs");
 const logsFileStream = fs.createWriteStream("./logs.txt");
+const { db } = require("../cdb/cdb.connect");
 const myConsole = new console.Console(logsFileStream);
-const { db } = require('../cdb/cdb.connect');
 const processMessage = require("../shared/processMessage");
-
-// Definimos un array para almacenar los contactos
-let contacts = [];
 
 const verifyToken = (req, res) => {
   try {
@@ -13,7 +10,7 @@ const verifyToken = (req, res) => {
     const token = req.query["hub.verify_token"];
     const challenge = req.query["hub.challenge"];
 
-    if (challenge != null && token != null && token === accessToken) {
+    if (challenge != null && token != null && token == accessToken) {
       res.send(challenge);
     } else {
       res.status(400).send();
@@ -31,7 +28,7 @@ const receivedMessage = async (req, res) => {
     const value = changes["value"];
     const messageObject = value["messages"];
     const contactsObject = value["contacts"];
-    
+
     if (messageObject && messageObject.length > 0) {
       const contactsName = contactsObject[0];
       const messages = messageObject[0];
@@ -62,7 +59,6 @@ const receivedMessage = async (req, res) => {
         } else {
           // Si el contacto no existe, lo creamos
           contact = { id: number, name: name, phone: number.toString(), messages: [] };
-          contacts.push(contact); // Agregamos el contacto al array de contactos
         }
 
         // Agregamos el mensaje al contacto
@@ -90,37 +86,12 @@ const receivedMessage = async (req, res) => {
       }
 
       processMessage.Process(text, number);
-      myConsole.log("Contactos actualizados: ", contacts);
+      myConsole.log("Contactos actualizados en la base de datos.");
     }
 
     res.send("EVENT_RECEIVED");
   } catch (error) {
     console.error("Error en el manejo del mensaje:", error);
-    res.status(500).send("Error en el servidor");
-  }
-};
-
-const getReceivedMessages = async (req, res) => {
-  try {
-    // Consulta para obtener todos los contactos con sus mensajes de la tabla messages
-    const query = `
-      SELECT id, name, phone, messages
-      FROM public.messages
-    `;
-    
-    const result = await db.query(query);
-
-    // Mapeamos los resultados para darles el formato esperado
-    const contacts = result.rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      phone: row.phone,
-      messages: row.messages
-    }));
-
-    res.json(contacts);
-  } catch (error) {
-    console.error("Error al obtener los mensajes recibidos:", error);
     res.status(500).send("Error en el servidor");
   }
 };
@@ -147,9 +118,8 @@ const sendMsg = async (req, res) => {
         // Si el contacto existe, lo recuperamos de la base de datos
         contact = rows[0];
       } else {
-        // Si el contacto no existe, lo creamos
-        contact = { id: parsedNumber, name: "Agente", phone: number.toString(), messages: [] };
-        contacts.push(contact); // Agregamos el contacto al array de contactos
+        // Si el contacto no existe, respondemos con un error
+        return res.status(404).json({ success: false, message: 'Contacto no encontrado' });
       }
 
       // Agregamos el mensaje al contacto
@@ -199,6 +169,31 @@ function GetTextUser(messages) {
     }
   }
   return text;
+};
+
+const getReceivedMessages = async (req, res) => {
+  try {
+    // Consulta para obtener los contactos con sus mensajes de la tabla messages
+    const query = `
+      SELECT id, name, phone, messages
+      FROM public.messages
+    `;
+    
+    const result = await db.query(query);
+
+    // Mapeamos los resultados para darles el formato esperado
+    const contacts = result.rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      phone: row.phone,
+      messages: row.messages
+    }));
+
+    res.json(contacts);
+  } catch (error) {
+    console.error("Error al obtener los mensajes recibidos:", error);
+    res.status(500).send("Error en el servidor");
+  }
 };
 
 module.exports = { verifyToken, receivedMessage, getReceivedMessages, sendMsg };
