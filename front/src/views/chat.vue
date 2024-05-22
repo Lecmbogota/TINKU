@@ -1,21 +1,29 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
+  <div class="container-fluid d-flex flex-column m-0 p-0" >
+    <div class="d-flex flex-grow-1 ">
       <!-- Columna de contactos -->
-      <div class="col elevation-4 m-0 p-0" style="height:94vh">
-        <h4 class="text-center">Contactos</h4>
+      <div class="col-3 elevation-7 m-0 p-0 bg-white d-flex flex-column " style=" overflow-y: auto; overflow-x: hidden; z-index: 100">
+        <div class="d-flex justify-content-start align-items-center " style=" background-color: #eeeeee">
+          <h4 class="mx-4">Chats</h4>
+          <div class="input-group p-3">
+            <span class="input-group-text" style="border-right: none;" id="basic-addon1"><i
+                class="bi bi-search"></i></span>
+            <input type="text" class="form-control borderer" placeholder=" Busca un chat" aria-label="search"
+              aria-describedby="basic-addon1">
+          </div>
+        </div>
+
         <hr class="m-0">
         <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
-          :class="{ 'active': contact === currentContact }" class="contact">
+          :class="{ 'active': contact === currentContact }" class="contact px-2">
           <div class="avatar">{{ contact.name.charAt(0) }}</div>
-          <div class="contact-details">
-            <div class="row">
+          <div class="contact-details ">
+            <div class="row ">
               <div class="col-12 ">
                 <a style="font-size: 16px;"><strong>{{ contact.name }}</strong></a>
               </div>
               <div class="col-12 d-flex justify-content-start align-items-center ">
-                <!--<i class="bi bi-check text-grey-lighten-1 me-1"></i><a style="font-size: 14px;">{{getLastMessage(contact) }}</a>-->
-                <i class="bi bi-check-all text-green-lighten-1 me-1"></i><a style="font-size: 14px;">{{
+                <a style="font-size: 14px;">{{
                   getLastMessage(contact) }}</a>
               </div>
               <div class="col-12 d-flex justify-content-end align-items-end ">
@@ -30,105 +38,97 @@
 
 
       <!-- Columna del chat -->
-      <div class="col-7 elevation-1">
-        <div class="main">
+      <div class="col elevation-1 m-0 p-0 d-flex flex-column flex-grow-1">
+        <div class="main m-0 p-0">
 
-          <div v-if="currentContact" class="chat-header">
-            <div class="row d-flex align-items-center">
-              <div class="col-auto m-0 p-0">
-                <div class="avatar-2">{{ currentContact.name.charAt(0) }}</div>
+          <div v-if="currentContact" class="chat-header" style="height: 60px;">
+            <div class="row d-flex align-items-center ">
+              <div class=" col-auto  row px-6 pt-2">
+                <div class="col-auto m-0 p-0">
+                  <div class="avatar-2">{{ currentContact.name.charAt(0) }}</div>
+                </div>
+                <div class="col row m-0 p-0">
+                  
+                    <h4>{{ currentContact.name }}</h4>
+                  
+                  
+                </div>
               </div>
-              <div class="col m-0 p-0">
-                <h4>{{ currentContact.name }}</h4>
-              </div>
-              <div class="col m-0 p-0 text-end">
-                <button class="btn btn-sm btn-primary">Llamar</button>
+
+
+              <div class="col m-0 p-0 text-end me-2">
+                <button class="btn btn-sm bg-white shadow-sm" @click="toggleShowInfo">
+                  <i :class="{ 'bi bi-caret-right-fill': showInfo, 'bi bi-caret-left-fill': !showInfo }"></i>
+
+                </button>
               </div>
 
             </div>
           </div>
 
-          <div ref="chatHistory"  class="chat-history" style="height: 95vh; overflow-y: auto; overflow-x: hidden;">
+          <div ref="chatHistory" class="chat-history custom-scroll mb-4"
+            style=" overflow-y: auto; overflow-x: hidden;">
+            <div class="bg-chat" :style="{ backgroundImage: 'url(' + bgChat + ')' }"></div>
             <!--listado de burbujas de la conversacion-->
-            <div v-if="currentContact">
-              <div  v-for="(message, index) in currentContact.messages" :key="index" class="message"
-              :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
-
-              <div class="message-container  "
+            <div v-if="currentContact" class="m-4">
+              <div v-for="(message, index) in currentContact.messages" :key="index" class="message"
                 :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
 
-                <div v-if="message.sender === 'Cliente'" class="avatar-cliente shadow-sm">{{
-                  currentContact.name.charAt(0) }}
-                </div>
+                <div class="message-container  "
+                  :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
 
-                <div class="message-content shadow-sm">
-                  <div class="row">
-                    <div class="col-12"
-                      :class="{ 'me-1': message.sender === 'Agente', 'ml-1': message.sender === 'Cliente' }">
-                      {{ message.text }}
-                    </div>
-                    <div class="col-12 mt-2" style="font-size: 10px"
-                      :class="{ 'text-start': message.sender === 'Agente', 'text-end': message.sender === 'Cliente' }">
-                      <a>
+                  <div v-if="message.sender === 'Cliente'" class="avatar-cliente shadow-sm">{{
+                    currentContact.name.charAt(0) }}
+                  </div>
+
+                  <div class="message-content shadow-sm">
+                    <div class="row px-1">
+
+                      <!--contenido del mensaje-->
+                      <div class="col-12">
+                        {{ message.text }}
+                      </div>
+
+                      <!--hora del mensaje -->
+                      <div class="col-12 mt-0 text-gray" style="font-size: 10px"
+                        :class="{ 'text-start': message.sender === 'Agente', 'text-end': message.sender === 'Cliente' }">
+
                         {{ message.horaMsg }}
-                      </a>
+
+                      </div>
+
                     </div>
                   </div>
-                </div>
 
-                <div v-if="message.sender === 'Agente'" class="avatar-agente shadow-sm"><i class="bi bi-headset"></i>
-                </div>
+                  <div v-if="message.sender === 'Agente'" class="avatar-agente shadow-sm"><i class="bi bi-headset"></i>
+                  </div>
 
+                </div>
               </div>
             </div>
-            </div>
-            
-          </div>
-
-          <hr class="m-0 p-0">
-          <!--textarea para enviar un msg-->
-          <div :class="{ 'chat-input': true, 'disabled': !currentContact }" >
-            <ul v-if="showRepliesList" class="quick-replies-list">
-              <li v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">{{ reply.text
-                }}</li>
-            </ul>
-            <textarea v-model="newMessage" :rows="numRows" type="text"
-              placeholder="Shift + enter for new line. Comience con '/' para seleccionar una respuesta predefinida."
-              class="form-control rounded resize-textarea  no-focus-outline" :disabled="!currentContact"
-              @keydown.enter.prevent="sendMessage"></textarea>
-
 
           </div>
-          <div class="row m-0 p-0">
-            <div class="col-6 d-flex justify-content-start">
-              <button class="btn btn-sm bg-grey-lighten-2  me-2" :disabled="!currentContact"
-              ><i class="bi bi-paperclip"></i></button>
-              <button class="btn btn-sm bg-grey-lighten-2" :disabled="!currentContact"
-              ><i class="bi bi-paperclip"></i></button>
-            </div>
-            <div class="col-6 d-flex justify-content-end">
-              <button @click="sendMessage" class="btn btn-sm btn-primary" :disabled="newMessage.trim() === ''">
-                <i class="bi bi-send me-1"></i>Enviar
-              </button>
-            </div>
-          </div>
+
+          
         </div>
       </div>
       <!-- Columna de pestañas -->
-      <div class="col-3 m-0 p-0 elevation-4">
+      <div v-if="showInfo" class="col-3 m-0 p-0 elevation-7 bg-white d-flex flex-column" style=" height:500px z-index:100">
 
-        <v-tabs v-model="tab" bg-color="primary">
-          <v-tab value="Perfil"> <i class="bi bi-person-vcard-fill me-1"></i> Perfil</v-tab>
-          <v-tab value="tipificar"><i class="bi bi-card-list me-1"></i> {{ this.optionButton }}</v-tab>
+        <v-tabs v-model="tab" bg-color="gray" style="height:70px; background-color: #eeeeee">
+
+          <v-tab value="Perfil" style="height:70px"> <i class="bi bi-person-vcard-fill me-1"></i> Perfil</v-tab>
+          <v-tab value="tipificar" style="height:70px"><i class="bi bi-card-list me-1"></i> {{ this.optionButton
+            }}</v-tab>
 
         </v-tabs>
-
+        <hr class="m-0 p-0" />
         <v-card-text class="m-0 p-0">
           <v-tabs-window v-model="tab" class="m-0 p-0">
 
             <!-- seccion de perfil -->
             <v-tabs-window-item value="Perfil">
-              <div v-show="currentContact" class="chat-header">
+              <div v-show="currentContact" class="">
 
                 <div class="row m-0 p-0">
                   <div class="col-12 d-flex justify-content-center">
@@ -237,6 +237,30 @@
         </v-card-text>
 
       </div>
+      <div class="bg-white fixed-bottom-container p-0">
+        <hr class="m-0 p-0">
+        <!--textarea para enviar un msg-->
+        <div :class="{ 'chat-input': true, 'disabled': !currentContact }">
+          <ul v-if="showRepliesList" class="quick-replies-list">
+            <li v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">{{ reply.text }}</li>
+          </ul>
+          <textarea v-model="newMessage" :rows="numRows" type="text"
+                    placeholder="Comience con '/' para seleccionar una respuesta predefinida."
+                    class="form-control rounded resize-textarea no-focus-outline" :disabled="!currentContact"
+                    @keydown.enter.prevent="sendMessage"></textarea>
+        </div>
+        <div class="row m-0 p-0">
+          <div class="col-6 d-flex justify-content-start">
+            <button class="btn btn-sm bg-grey-lighten-2 me-2" :disabled="!currentContact"><i class="bi bi-paperclip"></i></button>
+            <button class="btn btn-sm bg-grey-lighten-2" :disabled="!currentContact"><i class="bi bi-info"></i></button>
+          </div>
+          <div class="col-6 d-flex justify-content-end">
+            <button @click="sendMessage" class="btn btn-sm btn-primary" :disabled="newMessage.trim() === ''">
+              <i class="bi bi-send me-1"></i>Enviar
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -244,10 +268,12 @@
 <script>
 import { getmsg, sendmsg } from '../services/agentServices';
 import analisys from '../../src/assets/img/analisys.svg';
+import bgChat from '../../src/assets/img/bgChat.jpg';
 
 export default {
   data() {
     return {
+      showInfo: false,
       tab: null,
       firstname: '',
       lastname: '',
@@ -257,6 +283,7 @@ export default {
       newMessage: '',
       optionButton: 'tipificacion',
       analisys: analisys,
+      bgChat: bgChat,
       quickReplies: [
         { id: 1, text: 'Sí', value: 'Sí, estoy de acuerdo.' },
         { id: 2, text: 'No', value: 'No, estoy en desacuerdo.' },
@@ -282,7 +309,25 @@ export default {
       this.getAllMsg();
     }, 5000);
   },
+  mounted() {
+    // Agregar un listener de evento de teclado cuando el componente se monta
+    window.addEventListener('keydown', this.handleKeyDown);
+  },
+
+  beforeUnmount() {
+    // Remover el listener de evento de teclado antes de que el componente sea desmontado
+    window.removeEventListener('keydown', this.handleKeyDown);
+  },
   methods: {
+    handleKeyDown(event) {
+      // Verificar si se presionó la combinación Ctrl + A
+      if (event.altKey && event.key === 'a' && this.currentContact !== null) {
+        event.preventDefault(); // Prevenir el comportamiento por defecto (seleccionar todo el texto)
+
+        // Ejecutar la función que deseas
+        this.toggleShowInfo();
+      }
+    },
     checkForSlash() {
       if (this.newMessage.includes('/')) {
         this.showRepliesList = !this.showRepliesList;
@@ -336,6 +381,9 @@ export default {
       if (atBottom) {
         chatHistory.scrollTop = chatHistory.scrollHeight - chatHistory.clientHeight;
       }
+    },
+    toggleShowInfo() {
+      this.showInfo = !this.showInfo
     },
     async getAllMsg() {
       try {
@@ -437,7 +485,7 @@ export default {
 }
 
 .active {
-  background-color: #e6f3ef;
+  background-color: #dcdcdc;
 }
 
 .avatar {
@@ -451,6 +499,8 @@ export default {
   color: white;
   font-size: 20px;
   margin-right: 5px;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .message-container {
@@ -469,35 +519,36 @@ export default {
   color: white;
   font-size: 20px;
   margin-right: 5px;
-
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .avatar-cliente {
-  width: 30px;
-  height: 30px;
-  background-color: #c8c8c8;
-  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  background-color: rgb(248, 203, 158);
+  border-radius: 25% 0 25% 0;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   font-size: 20px;
   margin-right: 5px;
-
 }
 
 .avatar-agente {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   background-color: rgb(136, 182, 215);
-  border-radius: 50%;
+  border-radius: 0 25% 0 25%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   font-size: 20px;
   margin-left: 5px;
-
 }
 
 .avatar-3 {
@@ -511,6 +562,8 @@ export default {
   color: white;
   font-size: 40px;
   margin-top: 20px;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .contact-details {
@@ -518,8 +571,8 @@ export default {
 }
 
 .form-control:focus {
-  border-color: #ffffff00 !important;
-  outline: 0;
+  border-color: rgb(228, 228, 228) !important;
+  outline: 10px;
   box-shadow: none;
 }
 
@@ -533,10 +586,36 @@ export default {
   justify-content: space-between;
 }
 
+.bg-chat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../src/assets/img/bgChat.jpg');
+  background-repeat: repeat;
+  /* La imagen se repetirá tanto horizontal como verticalmente */
+  background-size: 400px;
+  /* Mantiene el tamaño original de la imagen para que se repita */
+  background-position: center;
+  opacity: 0.2;
+  /* Ajusta la opacidad según lo requieras */
+  z-index: -1;
+  /* Coloca la imagen detrás del contenido del chat */
+  filter: grayscale(100%);
+}
+
+
+.text-gray {
+  color: #ccc
+}
+
 .chat-header {
   border-bottom: 1px solid #ccc;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+  padding-left: 25px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #eeeeee;
 }
 
 .chat-history {
@@ -573,7 +652,7 @@ export default {
 .system .message-content {
   text-align: center;
   /* Alinea el texto a la derecha dentro de la burbuja */
-  background-color: #ffebce;
+  background-color: #c2c2c2;
   /* Color de fondo */
   width: 75%;
   /* Anchura de la burbuja */
@@ -591,10 +670,13 @@ export default {
   /* Margen derecho automático para alinear la burbuja a la izquierda */
 }
 
-/* Estilos para el área de entrada de texto */
-.chat-input {
- 
+input:focus {
+  border-width: 1px;
+  border-color: black;
 }
+
+/* Estilos para el área de entrada de texto */
+.chat-input {}
 
 .chat-input input {
   width: 70%;
@@ -603,5 +685,34 @@ export default {
 
 .chat-input button {
   width: 100px;
+}
+
+.custom-scroll {
+  height: 95vh;
+  overflow: hidden auto;
+  /* Oculta la barra de desplazamiento horizontal y permite la barra de desplazamiento vertical */
+  scrollbar-width: thin;
+  /* Ajusta el ancho de la barra de desplazamiento en Firefox */
+  scrollbar-color: #dddddd #f1f1f1;
+  /* Color del pulgar y de la pista en Firefox */
+}
+
+/* Estilizar la barra de desplazamiento en navegadores basados en WebKit (Chrome, Safari, Edge Chromium) */
+.custom-scroll::-webkit-scrollbar {
+  width: 12px;
+  /* Ajusta el ancho de la barra de desplazamiento */
+}
+
+.fixed-bottom-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff2b; /* Color de fondo blanco */
+  padding: 10px; /* Ajusta el espaciado interno según sea necesario */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Sombra para resaltar el contenedor */
+  z-index: 1000; /* Ajusta el valor de z-index según sea necesario */
+  height: 90px;
+  
 }
 </style>
