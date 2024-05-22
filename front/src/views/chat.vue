@@ -6,9 +6,8 @@
         <h4 class="text-center">Contactos</h4>
         <hr class="m-0">
         <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
-        
           :class="{ 'active': contact === currentContact }" class="contact">
-          <div class="avatar">{{ contact.name && contact.name.length > 0 ? contact.name.charAt(0) : contact.name }}</div>
+          <div class="avatar">{{ contact.name.charAt(0) }}</div>
           <div class="contact-details">
             <div class="row">
               <div class="col-12 ">
@@ -20,7 +19,8 @@
                   getLastMessage(contact) }}</a>
               </div>
               <div class="col-12 d-flex justify-content-end align-items-end ">
-                <a style="font-size: 10px; margin-right: 8px; margin-top: -3px;"><strong>Última vez: </strong>{{ contact }}</a>
+                <a style="font-size: 10px; margin-right: 8px; margin-top: -3px;"><strong>Última vez: </strong>{{
+                  getLastHoraMsg(contact) }}</a>
               </div>
 
             </div>
@@ -36,7 +36,7 @@
           <div v-if="currentContact" class="chat-header">
             <div class="row d-flex align-items-center">
               <div class="col-auto m-0 p-0">
-                <div class="avatar-2">{{ currentContact.name && currentContact.name.length > 0 ? currentContact.name.charAt(0) : currentContact.name }}</div>
+                <div class="avatar-2">{{ currentContact.name.charAt(0) }}</div>
               </div>
               <div class="col m-0 p-0">
                 <h4>{{ currentContact.name }}</h4>
@@ -48,47 +48,70 @@
             </div>
           </div>
 
-          <div v-if="currentContact" class="chat-history">
+          <div ref="chatHistory"  class="chat-history" style="height: 95vh; overflow-y: auto; overflow-x: hidden;">
             <!--listado de burbujas de la conversacion-->
-            <div v-for="(message, index) in currentContact.messages" :key="index" class="message"
+            <div v-if="currentContact">
+              <div  v-for="(message, index) in currentContact.messages" :key="index" class="message"
               :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
-              <div class="message-container"
+
+              <div class="message-container  "
                 :class="{ 'sent': message.sender === 'Agente', 'received': message.sender === 'Cliente' }">
-                <div v-if="message.sender === 'Cliente'" class="avatar-cliente">{{ currentContact.name && currentContact.name.length > 0 ? contcurrentContactact.name.charAt(0) : currentContact.name }}
+
+                <div v-if="message.sender === 'Cliente'" class="avatar-cliente shadow-sm">{{
+                  currentContact.name.charAt(0) }}
                 </div>
-                <div class="message-content">{{ message.text }}</div>
-                <div v-if="message.sender === 'Agente'" class="avatar-agente"><i class="bi bi-headset"></i></div>
-              </div>
 
-            </div>
-            <hr class="m-0 p-0">
-            <!--textarea para enviar un msg-->
-            <div v-if="currentContact" class="chat-input">
-              <ul v-if="showRepliesList" class="quick-replies-list">
-                <li v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">{{ reply.text
-                  }}</li>
-              </ul>
-              <textarea v-model="newMessage" :rows="numRows" type="text"
-                placeholder="Shift + enter for new line. Comience con '/' para seleccionar una respuesta predefinida."
-                class="form-control rounded resize-textarea  no-focus-outline" @keydown.enter.prevent="sendMessage"
-                ></textarea>
+                <div class="message-content shadow-sm">
+                  <div class="row">
+                    <div class="col-12"
+                      :class="{ 'me-1': message.sender === 'Agente', 'ml-1': message.sender === 'Cliente' }">
+                      {{ message.text }}
+                    </div>
+                    <div class="col-12 mt-2" style="font-size: 10px"
+                      :class="{ 'text-start': message.sender === 'Agente', 'text-end': message.sender === 'Cliente' }">
+                      <a>
+                        {{ message.horaMsg }}
+                      </a>
+                    </div>
+                  </div>
+                </div>
 
+                <div v-if="message.sender === 'Agente'" class="avatar-agente shadow-sm"><i class="bi bi-headset"></i>
+                </div>
 
-            </div>
-            <div class="row m-0 p-0">
-              <div class="col-6 d-flex justify-content-start">
-                <button class="btn btn-sm bg-grey-lighten-2  me-2"><i class="bi bi-paperclip"></i></button>
-                <button class="btn btn-sm bg-grey-lighten-2"><i class="bi bi-paperclip"></i></button>
-              </div>
-              <div class="col-6 d-flex justify-content-end">
-                <button @click="sendMessage" class="btn btn-sm btn-primary" :disabled="newMessage.trim() === ''">
-                  <i class="bi bi-send me-1"></i>Enviar
-                </button>
               </div>
             </div>
-
+            </div>
+            
           </div>
 
+          <hr class="m-0 p-0">
+          <!--textarea para enviar un msg-->
+          <div :class="{ 'chat-input': true, 'disabled': !currentContact }" >
+            <ul v-if="showRepliesList" class="quick-replies-list">
+              <li v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">{{ reply.text
+                }}</li>
+            </ul>
+            <textarea v-model="newMessage" :rows="numRows" type="text"
+              placeholder="Shift + enter for new line. Comience con '/' para seleccionar una respuesta predefinida."
+              class="form-control rounded resize-textarea  no-focus-outline" :disabled="!currentContact"
+              @keydown.enter.prevent="sendMessage"></textarea>
+
+
+          </div>
+          <div class="row m-0 p-0">
+            <div class="col-6 d-flex justify-content-start">
+              <button class="btn btn-sm bg-grey-lighten-2  me-2" :disabled="!currentContact"
+              ><i class="bi bi-paperclip"></i></button>
+              <button class="btn btn-sm bg-grey-lighten-2" :disabled="!currentContact"
+              ><i class="bi bi-paperclip"></i></button>
+            </div>
+            <div class="col-6 d-flex justify-content-end">
+              <button @click="sendMessage" class="btn btn-sm btn-primary" :disabled="newMessage.trim() === ''">
+                <i class="bi bi-send me-1"></i>Enviar
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <!-- Columna de pestañas -->
@@ -109,7 +132,7 @@
 
                 <div class="row m-0 p-0">
                   <div class="col-12 d-flex justify-content-center">
-                    <div class="avatar-3">{{ currentContact.name && currentContact.name.length > 0 ? currentContact.name.charAt(0) : currentContact.name }}</div>
+                    <div class="avatar-3">{{ currentContact.name.charAt(0) }}</div>
                   </div>
                 </div>
                 <div class="row m-0 p-0">
@@ -291,6 +314,27 @@ export default {
         }
       } else {
         return 'No hay mensajes';
+      }
+    },
+    getLastHoraMsg(contact) {
+      if (contact.messages && contact.messages.length > 0) {
+        for (let i = contact.messages.length - 1; i >= 0; i--) {
+          const message = contact.messages[i];
+          if (message.horaMsg) {
+            return message.horaMsg;
+          }
+        }
+      }
+      return '';
+    },
+    handleScroll() {
+      // Verificar si el usuario ha hecho scroll activamente hacia arriba
+      const chatHistory = this.$refs.chatHistory;
+      const atBottom = chatHistory.scrollHeight - chatHistory.clientHeight <= chatHistory.scrollTop + 1;
+
+      // Si no ha hecho scroll activo hacia arriba, mover al final
+      if (atBottom) {
+        chatHistory.scrollTop = chatHistory.scrollHeight - chatHistory.clientHeight;
       }
     },
     async getAllMsg() {
@@ -496,24 +540,31 @@ export default {
 }
 
 .chat-history {
+  margin-top: none;
   overflow-y: auto;
+  /* Scroll vertical automático */
+  overflow-x: hidden;
+  /* Oculta el scroll horizontal */
 }
+
 
 .message {
   margin-bottom: 20px;
 }
 
 .message-content {
-  padding: 10px;
+  padding: 5px;
   border-radius: 10px;
 }
 
 .sent .message-content {
   text-align: end;
   /* Alinea el texto a la derecha dentro de la burbuja */
-  background-color: #E3F2FD;
+  background-color: #f6fbff;
   /* Color de fondo */
-  width: 75%;
+  width: fit-content;
+  width: fit-content;
+  max-width: 75%;
   /* Anchura de la burbuja */
   margin-left: auto;
   /* Margen izquierdo automático para alinear la burbuja a la derecha */
@@ -524,23 +575,26 @@ export default {
   /* Alinea el texto a la derecha dentro de la burbuja */
   background-color: #ffebce;
   /* Color de fondo */
-  width: 50%;
+  width: 75%;
   /* Anchura de la burbuja */
   margin-left: auto;
   /* Margen izquierdo automático para alinear la burbuja a la derecha */
 }
 
 .received .message-content {
-  background-color: #ECEFF1;
+  background-color: #fcfcfc;
   /* Color de fondo */
-  width: 75%;
+  width: fit-content;
+  max-width: 75%;
   /* Anchura de la burbuja */
   margin-right: auto;
   /* Margen derecho automático para alinear la burbuja a la izquierda */
 }
 
 /* Estilos para el área de entrada de texto */
-.chat-input {}
+.chat-input {
+ 
+}
 
 .chat-input input {
   width: 70%;

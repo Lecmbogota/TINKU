@@ -35,7 +35,7 @@
     <router-view>
       <adminUsers v-show="tab === 'Panel'"></adminUsers>
       <administracion v-show="tab === 'Users'"></administracion>
-      <chat v-show="tab === 'chat'"></chat>
+      <chat v-if="tab === 'chat'"></chat>
     </router-view>
 
   </div>
