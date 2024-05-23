@@ -1,57 +1,66 @@
 <template>
-  <div class="container-fluid d-flex flex-column m-0 p-0" >
+  <div class="container-fluid d-flex flex-column m-0 p-0">
     <div class="d-flex flex-grow-1 ">
       <!-- Columna de contactos -->
-      <div class="col-3 elevation-7 m-0 p-0 bg-white d-flex flex-column " style=" overflow-y: auto; overflow-x: hidden; z-index: 100">
-        <div class="d-flex justify-content-start align-items-center " style=" background-color: #eeeeee">
-          <h4 class="mx-4">Chats</h4>
-          <div class="input-group p-3">
-            <span class="input-group-text" style="border-right: none;" id="basic-addon1"><i
-                class="bi bi-search"></i></span>
-            <input type="text" class="form-control borderer" placeholder=" Busca un chat" aria-label="search"
-              aria-describedby="basic-addon1">
-          </div>
-        </div>
+      <div class="col-3 elevation-7 m-0 p-0 bg-white d-flex flex-column " style="z-index: 100">
+        <div class="main1 m-0 p-0 mb-2">
 
-        <hr class="m-0">
-        <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
-          :class="{ 'active': contact === currentContact }" class="contact px-2">
-          <div class="avatar">{{ contact.name.charAt(0) }}</div>
-          <div class="contact-details ">
-            <div class="row ">
-              <div class="col-12 ">
-                <a style="font-size: 16px;"><strong>{{ contact.name }}</strong></a>
-              </div>
-              <div class="col-12 d-flex justify-content-start align-items-center ">
-                <a style="font-size: 14px;">{{
-                  getLastMessage(contact) }}</a>
-              </div>
-              <div class="col-12 d-flex justify-content-end align-items-end ">
-                <a style="font-size: 10px; margin-right: 8px; margin-top: -3px;"><strong>Última vez: </strong>{{
-                  getLastHoraMsg(contact) }}</a>
-              </div>
-
+          <!-- Encabezado de Columna de contactos -->
+          <div class="d-flex justify-content-start align-items-center"
+            style=" background-color: #eeeeee; height: 62px;">
+            <h4 class="mx-4 ">Chats</h4>
+            <div class="input-group p-3">
+              <span class="input-group-text" style="border-right: none;" id="basic-addon1"><i
+                  class="bi bi-search"></i></span>
+              <input type="text" class="form-control borderer" placeholder=" Busca un chat" aria-label="search"
+                aria-describedby="basic-addon1">
             </div>
           </div>
+
+          <!-- Cuerpo de Columna de contactos -->
+          <hr class="m-0 d-flex flex-column ">
+          <div style="overflow-y: auto; max-height: calc(100vh - 209px)">
+            <!-- Ajusta la altura máxima según tus necesidades -->
+            <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
+              :class="{ 'active': contact === currentContact }" class="contact px-2 contact-history">
+
+              <div class="avatar">{{ contact.name.charAt(0) }}</div>
+              <div class="contact-details">
+                <div class="row">
+                  <div class="col-12">
+                    <a style="font-size: 16px;"><strong>{{ contact.name }}</strong></a>
+                  </div>
+                  <div class="col-12 d-flex justify-content-start align-items-center">
+                    <a style="font-size: 14px;">{{ getLastMessage(contact) }}</a>
+                  </div>
+                  <div class="col-12 d-flex justify-content-end align-items-end">
+                    <a style="font-size: 10px; margin-right: 8px; margin-top: -3px;"><strong>Última vez: </strong>{{
+                      getLastHoraMsg(contact) }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-
 
       <!-- Columna del chat -->
       <div class="col elevation-1 m-0 p-0 d-flex flex-column flex-grow-1">
         <div class="main m-0 p-0">
 
-          <div v-if="currentContact" class="chat-header" style="height: 60px;">
+          <!-- Encabezado de Columna de chat -->
+          <div v-if="currentContact" class="chat-header" style="height: 70px;">
             <div class="row d-flex align-items-center ">
               <div class=" col-auto  row px-6 pt-2">
                 <div class="col-auto m-0 p-0">
                   <div class="avatar-2">{{ currentContact.name.charAt(0) }}</div>
                 </div>
                 <div class="col row m-0 p-0">
-                  
-                    <h4>{{ currentContact.name }}</h4>
-                  
-                  
+
+                  <h4>{{ currentContact.name }}</h4>
+
+
                 </div>
               </div>
 
@@ -66,8 +75,8 @@
             </div>
           </div>
 
-          <div ref="chatHistory" class="chat-history custom-scroll mb-4"
-            style=" overflow-y: auto; overflow-x: hidden;">
+          <!-- Cuerpo de Columna de chat -->
+          <div ref="chatHistory" class="chat-history custom-scroll mb-4" style=" overflow-y: auto; overflow-x: hidden;">
             <div class="bg-chat" :style="{ backgroundImage: 'url(' + bgChat + ')' }"></div>
             <!--listado de burbujas de la conversacion-->
             <div v-if="currentContact" class="m-4">
@@ -109,13 +118,14 @@
 
           </div>
 
-          
+
         </div>
       </div>
       <!-- Columna de pestañas -->
-      <div v-if="showInfo" class="col-3 m-0 p-0 elevation-7 bg-white d-flex flex-column" style=" height:500px z-index:100">
+      <div v-if="showInfo" class="col-3 m-0 p-0 elevation-7 bg-white d-flex flex-column"
+        style=" height:500px; z-index:100">
 
-        <v-tabs v-model="tab" bg-color="gray" style="height:70px; background-color: #eeeeee">
+        <v-tabs v-model="tab" bg-color="gray" style="height:62px; background-color: #eeeeee">
 
           <v-tab value="Perfil" style="height:70px"> <i class="bi bi-person-vcard-fill me-1"></i> Perfil</v-tab>
           <v-tab value="tipificar" style="height:70px"><i class="bi bi-card-list me-1"></i> {{ this.optionButton
@@ -242,16 +252,18 @@
         <!--textarea para enviar un msg-->
         <div :class="{ 'chat-input': true, 'disabled': !currentContact }">
           <ul v-if="showRepliesList" class="quick-replies-list">
-            <li v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">{{ reply.text }}</li>
+            <li v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">{{ reply.text }}
+            </li>
           </ul>
           <textarea v-model="newMessage" :rows="numRows" type="text"
-                    placeholder="Comience con '/' para seleccionar una respuesta predefinida."
-                    class="form-control rounded resize-textarea no-focus-outline" :disabled="!currentContact"
-                    @keydown.enter.prevent="sendMessage"></textarea>
+            placeholder="Comience con '/' para seleccionar una respuesta predefinida."
+            class="form-control rounded resize-textarea no-focus-outline" :disabled="!currentContact"
+            @keydown.enter.prevent="sendMessage"></textarea>
         </div>
         <div class="row m-0 p-0">
           <div class="col-6 d-flex justify-content-start">
-            <button class="btn btn-sm bg-grey-lighten-2 me-2" :disabled="!currentContact"><i class="bi bi-paperclip"></i></button>
+            <button class="btn btn-sm bg-grey-lighten-2 me-2" :disabled="!currentContact"><i
+                class="bi bi-paperclip"></i></button>
             <button class="btn btn-sm bg-grey-lighten-2" :disabled="!currentContact"><i class="bi bi-info"></i></button>
           </div>
           <div class="col-6 d-flex justify-content-end">
@@ -579,11 +591,16 @@ export default {
 /* Estilos para el área principal */
 .main {
   padding: 20px;
-  height: calc(100vh - 120px);
   /* Ajuste de altura para el chat */
+  height: calc(100vh - 120px);
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.main1 {
+  height: calc(100vh - 150px);
 }
 
 .bg-chat {
@@ -613,7 +630,7 @@ export default {
 .chat-header {
   border-bottom: 1px solid #ccc;
   padding-left: 25px;
-  padding-top: 5px;
+  padding-top: 12.5px;
   padding-bottom: 5px;
   background-color: #eeeeee;
 }
@@ -626,6 +643,13 @@ export default {
   /* Oculta el scroll horizontal */
 }
 
+.contact-history {
+  margin-top: none;
+  overflow-y: auto;
+  /* Scroll vertical automático */
+  overflow-x: hidden;
+  /* Oculta el scroll horizontal */
+}
 
 .message {
   margin-bottom: 20px;
@@ -708,11 +732,15 @@ input:focus {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #ffffff2b; /* Color de fondo blanco */
-  padding: 10px; /* Ajusta el espaciado interno según sea necesario */
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Sombra para resaltar el contenedor */
-  z-index: 1000; /* Ajusta el valor de z-index según sea necesario */
+  background-color: #ffffff2b;
+  /* Color de fondo blanco */
+  padding: 10px;
+  /* Ajusta el espaciado interno según sea necesario */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  /* Sombra para resaltar el contenedor */
+  z-index: 1000;
+  /* Ajusta el valor de z-index según sea necesario */
   height: 90px;
-  
+
 }
 </style>
