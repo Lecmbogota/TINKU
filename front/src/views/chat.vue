@@ -50,7 +50,7 @@
         <div class="main m-0 p-0">
 
           <!-- Encabezado de Columna de chat -->
-          <div v-if="currentContact" class="chat-header" style="height: 70px;">
+          <div v-if="currentContact" class="chat-header" style="height: 63px;">
             <div class="row d-flex align-items-center ">
               <div class=" col-auto  row px-6 pt-2">
                 <div class="col-auto m-0 p-0">
@@ -256,56 +256,42 @@
 
         <!--textarea para enviar un msg-->
         <div :class="{ 'disabled': !currentContact }" class="d-flex justify-content-center">
-          
-            <v-menu  :close-on-content-click="true" >
-              <template v-slot:activator="{ props }">
-                <textarea v-model="newMessage" :rows="numRows"
+
+          <v-menu :close-on-content-click="true">
+            <template v-slot:activator="{ props }">
+              <textarea v-model="newMessage" :rows="numRows"
                 placeholder="Comience con '/' para seleccionar una respuesta predefinida."
                 class="form-control rounded resize-textarea no-focus-outline mb-0 pb-2" :disabled="!currentContact"
                 @keydown.enter.prevent="sendMessage" @input="handleInputChange" v-bind="props"></textarea>
-                
-              </template>
-                
-              <v-card v-if="showRepliesList" >
-                <template v-if="showRepliesList">
-                  <v-list>
-                    <v-list-item>
+
+            </template>
+
+            <v-card v-if="showRepliesList">
+              <template v-if="showRepliesList">
+                <v-list>
+                  <v-list-item>
                     <h4>Respuestas Rapidas</h4>
-                    </v-list-item>
-                  </v-list>
-                  <v-divider></v-divider>
-                  <v-list dense style="overflow-y: auto; overflow-x: hidden; height: 160px">
-                    <v-list-item v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">
-                      <v-list-item-content>
-                        <v-list-item-title>{{ reply.text }}</v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list>
-                </template>
-              </v-card>
-            </v-menu>
+                  </v-list-item>
+                </v-list>
+                <v-divider></v-divider>
+                <v-list dense style="overflow-y: auto; overflow-x: hidden; height: 160px">
+                  <v-list-item v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">
+                    <v-list-item-content>
+                      <v-list-item-title>{{ reply.text }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </template>
+            </v-card>
+          </v-menu>
 
         </div>
         <hr class="m-0 p-0 mb-3" />
         <div class="row m-0 pb-3">
           <div class="col-6 d-flex justify-content-start">
-            <button class="btn btn-sm bg-grey-lighten-2 me-2" :disabled="!currentContact"><i
-                class="bi bi-paperclip"></i></button>
-            <button class="btn btn-sm bg-grey-lighten-2" :disabled="!currentContact"><i class="bi bi-info"></i></button>
-            <button @click="startListening" 
-            class="btn microphone-button btn-danger btn-pill" 
-            :class="
-            [
-              'btn-circle',
-              { 
-              'bg-white': isListening, 
-              'btn-pill': isListening,
-              'col-3': !isListening, 
-              'w-100': isListening, 
-              'btn-sm': isListening 
-              }
-            ]" 
-            :disabled="isListening"></button>
+            <button class="btn btn-sm bg-grey-lighten-2 me-2" :disabled="!currentContact"><i class="bi bi-paperclip"></i></button>
+                <button @click="startListening" class="btn btn-sm btn-danger me-2" :disabled="isListening"><i class="bi bi-mic-fill"></i></button>
+                <button class="btn btn-sm bg-grey-lighten-2 me-2" :disabled="!currentContact">IA</button>
           </div>
           <div class="col-6 d-flex justify-content-end">
             <button @click="sendMessage" class="btn btn-sm btn-primary" :disabled="newMessage.trim() === ''">
@@ -376,63 +362,63 @@ export default {
   },
   methods: {
     startListening() {
-  if (!('webkitSpeechRecognition' in window)) {
-    console.log("Speech recognition not supported on this browser!");
-    return;
-  }
-
-  this.isListening = true;
-
-  const recognition = new window.webkitSpeechRecognition();
-  recognition.lang = "es"; // Establece el idioma (español)
-
-  // Establece algunos parámetros opcionales
-  recognition.interimResults = true; // Obtener resultados provisionales
-  recognition.continuous = true; // Escuchar continuamente
-  recognition.maxAlternatives = 1; // Número máximo de alternativas a devolver
-
-  let timeout;
-
-  const resetTimeout = () => {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(() => {
-      recognition.stop();
-      this.isListening = false;
-    }, 5000); // Detiene el reconocimiento después de 5 segundos sin audio
-  };
-
-  recognition.onresult = (event) => {
-    resetTimeout(); // Reiniciar el temporizador en cada resultado
-    let interimTranscript = '';
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const transcript = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
-        this.newMessage += transcript + ' ';
-      } else {
-        interimTranscript += transcript;
+      if (!('webkitSpeechRecognition' in window)) {
+        console.log("Speech recognition not supported on this browser!");
+        return;
       }
-    }
-    // Aquí podrías mostrar resultados provisionales si lo deseas
-    console.log("Interim transcript:", interimTranscript);
-  };
 
-  recognition.onerror = (event) => {
-    console.error("Speech recognition error occurred:", event.error);
-    this.isListening = false;
-    recognition.stop();
-  };
+      this.isListening = true;
 
-  recognition.onend = () => {
-    console.log("Speech recognition ended.");
-    this.isListening = false;
-    clearTimeout(timeout); // Limpiar el temporizador cuando termine el reconocimiento
-  };
+      const recognition = new window.webkitSpeechRecognition();
+      recognition.lang = "es"; // Establece el idioma (español)
 
-  recognition.start();
-  resetTimeout(); // Configura el temporizador inicial para detener el reconocimiento si no se detecta audio al inicio
-},
+      // Establece algunos parámetros opcionales
+      recognition.interimResults = true; // Obtener resultados provisionales
+      recognition.continuous = true; // Escuchar continuamente
+      recognition.maxAlternatives = 1; // Número máximo de alternativas a devolver
+
+      let timeout;
+
+      const resetTimeout = () => {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+          recognition.stop();
+          this.isListening = false;
+        }, 5000); // Detiene el reconocimiento después de 5 segundos sin audio
+      };
+
+      recognition.onresult = (event) => {
+        resetTimeout(); // Reiniciar el temporizador en cada resultado
+        let interimTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            this.newMessage += transcript + ' ';
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        // Aquí podrías mostrar resultados provisionales si lo deseas
+        console.log("Interim transcript:", interimTranscript);
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error occurred:", event.error);
+        this.isListening = false;
+        recognition.stop();
+      };
+
+      recognition.onend = () => {
+        console.log("Speech recognition ended.");
+        this.isListening = false;
+        clearTimeout(timeout); // Limpiar el temporizador cuando termine el reconocimiento
+      };
+
+      recognition.start();
+      resetTimeout(); // Configura el temporizador inicial para detener el reconocimiento si no se detecta audio al inicio
+    },
 
 
     handleKeyDown(event) {
@@ -866,7 +852,7 @@ input:focus {
 }
 
 .menu-container-expanded {
- 
+
   border-radius: 15px;
 
   /* Margen derecho de 3 columnas */
@@ -925,7 +911,9 @@ input:focus {
 .quick-replies-list li:hover {
   background-color: #ddd;
 }
+
 .disabled {
-  opacity: 0.6; /* Estilo opcional para deshabilitar el textarea visualmente */
+  opacity: 0.6;
+  /* Estilo opcional para deshabilitar el textarea visualmente */
 }
 </style>
