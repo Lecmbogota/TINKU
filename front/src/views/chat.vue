@@ -2,7 +2,7 @@
   <div class="container-fluid d-flex flex-column m-0 p-0">
     <div class="d-flex flex-grow-1 ">
       <!-- Columna de contactos -->
-      <div class="col-3 elevation-7 m-0 p-0 bg-white d-flex flex-column " style="z-index: 100">
+      <div class="col-3 elevation-7 m-0 p-0 bg-white d-flex flex-column " style="z-index: 100 ">
         <div class="main1 m-0 p-0 mb-2">
 
           <!-- Encabezado de Columna de contactos -->
@@ -19,7 +19,7 @@
 
           <!-- Cuerpo de Columna de contactos -->
           <hr class="m-0 d-flex flex-column ">
-          <div style="overflow-y: auto; max-height: calc(100vh - 209px)">
+          <div class="custom-scroll" style="overflow-y: auto; height: calc(100vh - 125px)">
             <!-- Ajusta la altura máxima según tus necesidades -->
             <div v-for="contact in contacts" :key="contact.id" @click="selectContact(contact)"
               :class="{ 'active': contact === currentContact }" class="contact px-2 contact-history">
@@ -76,8 +76,9 @@
           </div>
 
           <!-- Cuerpo de Columna de chat -->
-          <div ref="chatHistory" class="chat-history custom-scroll mb-4" style=" overflow-y: auto; overflow-x: hidden;">
-            <div class="bg-chat" :style="{ backgroundImage: 'url(' + bgChat + ')' }"></div>
+          <div class="bg-chat" :style="{ backgroundImage: 'url(' + bgChat + ')' }"></div>
+          <div ref="chatHistory" class="chat-history custom-scroll mb-0 pb-0"
+            style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 250px)">
             <!--listado de burbujas de la conversacion-->
             <div v-if="currentContact" class="m-4">
               <div v-for="(message, index) in currentContact.messages" :key="index" class="message"
@@ -122,8 +123,8 @@
         </div>
       </div>
       <!-- Columna de pestañas -->
-      <div v-if="showInfo" class="col-3 m-0 p-0 elevation-7 bg-white d-flex flex-column"
-        style=" height:500px; z-index:100">
+      <div v-if="showInfo" class="col-4 m-0 p-0 elevation-7 bg-white d-flex flex-column"
+        style="height: calc(100vh - 60px) ; z-index:100">
 
         <v-tabs v-model="tab" bg-color="gray" style="height:62px; background-color: #eeeeee">
 
@@ -247,24 +248,64 @@
         </v-card-text>
 
       </div>
-      <div class="bg-white fixed-bottom-container p-0">
-        <hr class="m-0 p-0">
+
+      <div class="fixed-bottom-bg"></div>
+      <div v-if="currentContact !== null"
+        :class="{ 'fixed-bottom-container': !showInfo, 'fixed-bottom-container-expanded': showInfo }"
+        class="bg-white p-0 elevation-7">
+
         <!--textarea para enviar un msg-->
-        <div :class="{ 'chat-input': true, 'disabled': !currentContact }">
-          <ul v-if="showRepliesList" class="quick-replies-list">
-            <li v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">{{ reply.text }}
-            </li>
-          </ul>
-          <textarea v-model="newMessage" :rows="numRows" type="text"
-            placeholder="Comience con '/' para seleccionar una respuesta predefinida."
-            class="form-control rounded resize-textarea no-focus-outline" :disabled="!currentContact"
-            @keydown.enter.prevent="sendMessage"></textarea>
+        <div :class="{ 'disabled': !currentContact }" class="d-flex justify-content-center">
+          
+            <v-menu  :close-on-content-click="true" >
+              <template v-slot:activator="{ props }">
+                <textarea v-model="newMessage" :rows="numRows"
+                placeholder="Comience con '/' para seleccionar una respuesta predefinida."
+                class="form-control rounded resize-textarea no-focus-outline mb-0 pb-2" :disabled="!currentContact"
+                @keydown.enter.prevent="sendMessage" @input="handleInputChange" v-bind="props"></textarea>
+                
+              </template>
+                
+              <v-card v-if="showRepliesList" >
+                <template v-if="showRepliesList">
+                  <v-list>
+                    <v-list-item>
+                    <h4>Respuestas Rapidas</h4>
+                    </v-list-item>
+                  </v-list>
+                  <v-divider></v-divider>
+                  <v-list dense style="overflow-y: auto; overflow-x: hidden; height: 160px">
+                    <v-list-item v-for="reply in quickReplies" :key="reply.id" @click="selectQuickReply(reply.value)">
+                      <v-list-item-content>
+                        <v-list-item-title>{{ reply.text }}</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </template>
+              </v-card>
+            </v-menu>
+
         </div>
-        <div class="row m-0 p-0">
+        <hr class="m-0 p-0 mb-3" />
+        <div class="row m-0 pb-3">
           <div class="col-6 d-flex justify-content-start">
             <button class="btn btn-sm bg-grey-lighten-2 me-2" :disabled="!currentContact"><i
                 class="bi bi-paperclip"></i></button>
             <button class="btn btn-sm bg-grey-lighten-2" :disabled="!currentContact"><i class="bi bi-info"></i></button>
+            <button @click="startListening" 
+            class="btn microphone-button btn-danger btn-pill" 
+            :class="
+            [
+              'btn-circle',
+              { 
+              'bg-white': isListening, 
+              'btn-pill': isListening,
+              'col-3': !isListening, 
+              'w-100': isListening, 
+              'btn-sm': isListening 
+              }
+            ]" 
+            :disabled="isListening"></button>
           </div>
           <div class="col-6 d-flex justify-content-end">
             <button @click="sendMessage" class="btn btn-sm btn-primary" :disabled="newMessage.trim() === ''">
@@ -273,6 +314,8 @@
           </div>
         </div>
       </div>
+
+
     </div>
   </div>
 </template>
@@ -285,6 +328,7 @@ import bgChat from '../../src/assets/img/bgChat.jpg';
 export default {
   data() {
     return {
+      isListening: false,
       showInfo: false,
       tab: null,
       firstname: '',
@@ -331,6 +375,66 @@ export default {
     window.removeEventListener('keydown', this.handleKeyDown);
   },
   methods: {
+    startListening() {
+  if (!('webkitSpeechRecognition' in window)) {
+    console.log("Speech recognition not supported on this browser!");
+    return;
+  }
+
+  this.isListening = true;
+
+  const recognition = new window.webkitSpeechRecognition();
+  recognition.lang = "es"; // Establece el idioma (español)
+
+  // Establece algunos parámetros opcionales
+  recognition.interimResults = true; // Obtener resultados provisionales
+  recognition.continuous = true; // Escuchar continuamente
+  recognition.maxAlternatives = 1; // Número máximo de alternativas a devolver
+
+  let timeout;
+
+  const resetTimeout = () => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      recognition.stop();
+      this.isListening = false;
+    }, 5000); // Detiene el reconocimiento después de 5 segundos sin audio
+  };
+
+  recognition.onresult = (event) => {
+    resetTimeout(); // Reiniciar el temporizador en cada resultado
+    let interimTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        this.newMessage += transcript + ' ';
+      } else {
+        interimTranscript += transcript;
+      }
+    }
+    // Aquí podrías mostrar resultados provisionales si lo deseas
+    console.log("Interim transcript:", interimTranscript);
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error occurred:", event.error);
+    this.isListening = false;
+    recognition.stop();
+  };
+
+  recognition.onend = () => {
+    console.log("Speech recognition ended.");
+    this.isListening = false;
+    clearTimeout(timeout); // Limpiar el temporizador cuando termine el reconocimiento
+  };
+
+  recognition.start();
+  resetTimeout(); // Configura el temporizador inicial para detener el reconocimiento si no se detecta audio al inicio
+},
+
+
     handleKeyDown(event) {
       // Verificar si se presionó la combinación Ctrl + A
       if (event.altKey && event.key === 'a' && this.currentContact !== null) {
@@ -354,9 +458,11 @@ export default {
     showQuickReplies() {
       this.showRepliesList = !this.showRepliesList;
     },
-    selectQuickReply(reply) {
-      this.newMessage = reply;
-      this.showRepliesList = false; // Oculta la lista de respuestas rápidas después de seleccionar una
+    selectQuickReply(replyValue) {
+      // Lógica para seleccionar una respuesta rápida
+      console.log('Seleccionaste:', replyValue);
+      this.newMessage = replyValue; // Opcional: asignar el valor al textarea
+      this.showRepliesList = false; // Ocultar el tooltip después de seleccionar
     },
     selectContact(contact) {
       this.currentContact = contact;
@@ -591,8 +697,7 @@ export default {
 /* Estilos para el área principal */
 .main {
   padding: 20px;
-  /* Ajuste de altura para el chat */
-  height: calc(100vh - 120px);
+
 
   display: flex;
   flex-direction: column;
@@ -600,7 +705,7 @@ export default {
 }
 
 .main1 {
-  height: calc(100vh - 150px);
+  height: calc(100vh - 70px);
 }
 
 .bg-chat {
@@ -615,7 +720,7 @@ export default {
   background-size: 400px;
   /* Mantiene el tamaño original de la imagen para que se repita */
   background-position: center;
-  opacity: 0.2;
+  opacity: 0.4;
   /* Ajusta la opacidad según lo requieras */
   z-index: -1;
   /* Coloca la imagen detrás del contenido del chat */
@@ -700,16 +805,7 @@ input:focus {
 }
 
 /* Estilos para el área de entrada de texto */
-.chat-input {}
 
-.chat-input input {
-  width: 70%;
-  border-radius: 20px;
-}
-
-.chat-input button {
-  width: 100px;
-}
 
 .custom-scroll {
   height: 95vh;
@@ -729,18 +825,107 @@ input:focus {
 
 .fixed-bottom-container {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #ffffff2b;
+  bottom: 15px;
+  border-radius: 15px;
+  left: 27%;
+  /* 3 columnas */
+  right: 267%;
+  /* Margen derecho de 3 columnas */
+  width: 71%;
+  /* Ajustar el ancho para ocupar el resto de la pantalla */
+
   /* Color de fondo blanco */
-  padding: 10px;
+  padding: 20px;
   /* Ajusta el espaciado interno según sea necesario */
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   /* Sombra para resaltar el contenedor */
-  z-index: 1000;
+  z-index: 99;
   /* Ajusta el valor de z-index según sea necesario */
-  height: 90px;
+  height: auto;
 
+}
+
+.fixed-bottom-container-expanded {
+  position: fixed;
+  bottom: 15px;
+  border-radius: 15px;
+  left: 27%;
+  /* 3 columnas */
+  right: 34%;
+  /* Margen derecho de 3 columnas */
+  width: 38%;
+  /* Ajustar el ancho para ocupar el resto de la pantalla */
+  /* Color de fondo blanco */
+  padding: 20px;
+  /* Ajusta el espaciado interno según sea necesario */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  /* Sombra para resaltar el contenedor */
+  z-index: 99;
+  /* Ajusta el valor de z-index según sea necesario */
+  height: auto;
+}
+
+.menu-container-expanded {
+ 
+  border-radius: 15px;
+
+  /* Margen derecho de 3 columnas */
+  width: 100%;
+  /* Ajustar el ancho para ocupar el resto de la pantalla */
+  /* Color de fondo blanco */
+  padding: 20px;
+  /* Ajusta el espaciado interno según sea necesario */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  /* Sombra para resaltar el contenedor */
+  z-index: 99;
+  /* Ajusta el valor de z-index según sea necesario */
+  height: auto;
+}
+
+.fixed-bottom-bg {
+  position: fixed;
+  bottom: 0;
+  left: 25%;
+  /* 3 columnas */
+  width: 75%;
+  /* Ajustar el ancho para ocupar el resto de la pantalla */
+  /* Color de fondo blanco */
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(41, 78, 126, 0.1), rgba(16, 50, 93, 0.1));
+  /* Gradiente lineal en tonos azules con transparencia */
+  /* Ajusta el espacrgb(55, 55, 55)interno según sea necesario */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  /* Efecto de desenfoque */
+  /* Sombra para resaltar el contenedor */
+  z-index: 80;
+  /* Ajusta el valor de z-index según sea necesario */
+  height: 140px;
+}
+
+.quick-replies-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  z-index: 500;
+  width: 100%;
+  /* Ajustamos el ancho al 100% */
+}
+
+.quick-replies-list li {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.quick-replies-list li:hover {
+  background-color: #ddd;
+}
+.disabled {
+  opacity: 0.6; /* Estilo opcional para deshabilitar el textarea visualmente */
 }
 </style>

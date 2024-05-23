@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar bg-white shadow-lg" style="z-index: 200">
+    <nav class="navbar bg-white shadow-lg" style="z-index: 200; height: 60px">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
           <img :src="isotipo" alt="isotipo" height="25" class="d-inline-block align-text-top me-2" />
