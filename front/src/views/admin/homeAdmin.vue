@@ -17,9 +17,7 @@
           <li class="nav-item">
             <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'"> <strong>Auditoria</strong></a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'chat' }" href="#" @click="tab = 'chat'"> <strong>Chat</strong>Go</a>
-          </li>
+          
         </ul>
         <div class="nav-item">
           <div class="d-xl-block ps-2">

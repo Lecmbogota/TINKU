@@ -135,7 +135,7 @@
         </v-tabs>
         <hr class="m-0 p-0" />
         <v-card-text class="m-0 p-0">
-          <v-tabs-window v-model="tab" class="m-0 p-0">
+          <v-tabs-window v-model="tab" class="m-0 p-0 custom-scroll" style="overflow-y: auto; height: calc(100vh - 125px)">
 
             <!-- seccion de perfil -->
             <v-tabs-window-item value="Perfil">
@@ -248,8 +248,13 @@
         </v-card-text>
 
       </div>
+      <div v-if="currentContact === null"  class="select-contact row " > 
+        <div class="col-12 d-flex justify-content-center align-items-center " ><i class="bi bi-chat-left-dots text-grey-lighten-1
+          " style="font-size:90px"></i></div>
+        <div class="col-12 d-flex justify-content-center align-items-center text-grey-lighten-1 fs-4 " >Selecciona una conversacion Para Iniciar</div>
+        </div>
 
-      <div class="fixed-bottom-bg"></div>
+      <div v-if="currentContact !== null" class="fixed-bottom-bg"></div>
       <div v-if="currentContact !== null"
         :class="{ 'fixed-bottom-container': !showInfo, 'fixed-bottom-container-expanded': showInfo }"
         class="bg-white p-0 elevation-7">
@@ -259,10 +264,10 @@
 
           <v-menu :close-on-content-click="true">
             <template v-slot:activator="{ props }">
-              <textarea v-model="newMessage" :rows="numRows"
+              <textarea v-model="newMessage" rows="1"
                 placeholder="Comience con '/' para seleccionar una respuesta predefinida."
-                class="form-control rounded resize-textarea no-focus-outline mb-0 pb-2" :disabled="!currentContact"
-                @keydown.enter.prevent="sendMessage" @input="handleInputChange" v-bind="props"></textarea>
+                class="form-control rounded resize-textarea  no-focus-outline mb-0 pb-1" :disabled="!currentContact"
+                @keydown.enter.prevent="sendMessage" @input="handleInputChange" v-bind="props"  ref="textareaIpt"></textarea>
 
             </template>
 
@@ -354,6 +359,7 @@ export default {
   mounted() {
     // Agregar un listener de evento de teclado cuando el componente se monta
     window.addEventListener('keydown', this.handleKeyDown);
+    this.adjustTextareaHeight();
   },
 
   beforeUnmount() {
@@ -513,6 +519,17 @@ export default {
         this.newMessage = '';
       }
     },
+    handleInputChange() {
+      // Maneja la entrada del textarea (si es necesario)
+      this.adjustTextareaHeight();
+    },
+    adjustTextareaHeight() {
+      // Ajusta la altura del textarea según el contenido
+      if (this.$refs.textareaIpt) {
+        this.$refs.textareaIpt.style.height = 'auto';
+        this.$refs.textareaIpt.style.height = (this.$refs.textareaIpt.scrollHeight) + 'px';
+      }
+    }
   },
   watch: {
     newMessage(newValue) {
@@ -867,7 +884,13 @@ input:focus {
   /* Ajusta el valor de z-index según sea necesario */
   height: auto;
 }
-
+.select-contact{
+  position: fixed;
+  bottom: 40%;
+  left: 25%;
+  /* 3 columnas */
+  width: 75%;
+}
 .fixed-bottom-bg {
   position: fixed;
   bottom: 0;
@@ -915,5 +938,11 @@ input:focus {
 .disabled {
   opacity: 0.6;
   /* Estilo opcional para deshabilitar el textarea visualmente */
+}
+.resize-textarea {
+  resize: none;
+  overflow-y: auto;
+  max-height: 200px; /* Altura máxima */
+
 }
 </style>

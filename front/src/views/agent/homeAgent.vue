@@ -1,85 +1,115 @@
 <template>
   <div>
-    <nav class="navbar bs-body-bg shadow-lg">
+    <nav class="navbar bg-white shadow-lg" style="z-index: 200; height: 60px">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
           <img :src="isotipo" alt="isotipo" height="25" class="d-inline-block align-text-top me-2" />
-          <img :src="Logo" alt="logo" height="25" class="d-inline-block align-text-top" />
+          <img :src="logo" alt="logo" height="25" class="d-inline-block align-text-top" />
         </a>
-        <h3>agente</h3>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-        <i class="bi bi-power me-3" @click="logout()"></i>
+        <ul class="nav justify-content-center">
+
+          <li class="nav-item">
+            <!--<a class="nav-link" :class="{ 'nav-tab-focus': tab === 'chat' }" href="#" @click="tab = 'chat'"> <strong>Chat</strong>Go</a>-->
+          </li>
+        </ul>
+        <div class="nav-item">
+          <div class="d-xl-block ps-2">
+            <i class="bi bi-circle me-1"></i>
+            {{ this.ip }}
+            <i class="bi bi-person mx-3 me-1"></i>
+            {{ this.nombreUsuario }}
+            <i class="bi bi-power mx-3" @click="salir()"></i>
+          </div>
+        </div>
       </div>
     </nav>
-
-
     <router-view>
-      <Panel v-if="tab === 'Panel'"></Panel>
+      <adminUsers v-show="tab === 'Panel'"></adminUsers>
+      <administracion v-show="tab === 'Users'"></administracion>
+      <chat v-if="tab === 'chat'"></chat>
     </router-view>
 
   </div>
 </template>
 
+
 <script>
-import { logout } from '../../services/authServices.js';
+import router from '../../router/routes';
+import logo from '../../assets/img/logo2.jpg';
+import isotipo from '../../assets/img/isotipo.jpg';
+import adminUsers from '@/views/adminUsers.vue';
+import chat from '@/views/chat.vue';
+import administracion from '@/views/administracion.vue'
 
 export default {
   data() {
     return {
       user: (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).nombre) || '',
       clientIp: null,
-      tab: 'Panel',
+      tab: 'chat',
+      logo: logo,
+      isotipo: isotipo,
+      nombreUsuario: '',
+      ip: ''
     };
   },
+  // Cambiado de component a components
+  components: {
+    adminUsers,
+    administracion,
+    chat
+  },
   methods: {
-    async getUsuarioId() {
-      try {
-        const token = localStorage.getItem('token');
-        const decodedToken = JSON.parse(atob(token.split('.')[1]));
-        console.log(decodedToken);
-        return {
-          userId: decodedToken.id,
-          rolId: decodedToken.rol_id
-        } 
-      } catch (error) {
-        console.error('Error al obtener el ID del usuario:', error);
-      }
-    },
-    async logout() {
-      try {
-        const { userId, rolId } = await this.getUsuarioId();
-
-        // Realizar una solicitud POST al endpoint de logout
-        await logout(userId, rolId);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        // Logout exitoso, redirigir al usuario a la página de inicio de sesión
-        this.$router.push('/');
-        // También puedes mostrar un mensaje de éxito al usuario si lo deseas
-        this.$toasted.success('Sesión cerrada correctamente');
-      } catch (error) {
-        // Manejar errores de red o del servidor
-        console.error('Error al cerrar sesión:', error);
-        this.$toasted.error('Error al cerrar sesión. Por favor, inténtalo de nuevo.');
-      }
+    salir() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      router.push('/');
     },
     async fetchIpAddress() {
       try {
         const response = await fetch('https://api.ipify.org?format=json');
         const data = await response.json();
-        this.clientIp = data.ip;
+        this.ip = data.ip;
       } catch (error) {
         console.error('Error al obtener la dirección IP:', error);
       }
-    }
+    },
+    async getNombreUsuarioPorId() {
+      try {
+        const token = localStorage.getItem('token');
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        console.log(decodedToken)
+        this.nombreUsuario = decodedToken.nombre;
+      } catch (error) {
+        console.error('Error al obtener el nombre del usuario:', error);
+      }
+    },
   },
   created() {
     this.fetchIpAddress();
+    this.getNombreUsuarioPorId()
+
   }
 };
+
+
 </script>
 
-<style scoped></style>
+
+<style scoped>
+
+.nav-link{
+  pointer-events: auto;
+  text-decoration: none;
+  color: rgb(119, 119, 119);
+  font-weight: bold;
+}
+.nav-link:hover{
+  color: rgb(104, 104, 104);
+}
+.nav-link:focus,
+.nav-link:active,
+.nav-tab-focus { /* Agregado para el estado activo */
+  color: rgb(72, 129, 146);
+}
+</style>
