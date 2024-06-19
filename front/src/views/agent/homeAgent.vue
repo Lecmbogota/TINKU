@@ -24,8 +24,6 @@
       </div>
     </nav>
     <router-view>
-      <adminUsers v-show="tab === 'Panel'"></adminUsers>
-      <administracion v-show="tab === 'Users'"></administracion>
       <chat v-if="tab === 'chat'"></chat>
     </router-view>
 
@@ -37,9 +35,9 @@
 import router from '../../router/routes';
 import logo from '../../assets/img/logo2.jpg';
 import isotipo from '../../assets/img/isotipo.jpg';
-import adminUsers from '@/views/adminUsers.vue';
+
 import chat from '@/views/chat.vue';
-import administracion from '@/views/administracion.vue'
+
 
 export default {
   data() {
@@ -55,8 +53,6 @@ export default {
   },
   // Cambiado de component a components
   components: {
-    adminUsers,
-    administracion,
     chat
   },
   methods: {

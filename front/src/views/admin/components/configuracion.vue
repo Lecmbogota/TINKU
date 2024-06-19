@@ -2,8 +2,7 @@
   <div class="row m-0 p-0">
     <div id="menu" class="sidebar col-2">
       <div class="sidebar-header">   
-          <span><strong>Admin</strong></span>Panel
-          <hr class="mt-0">
+          
       </div>
       <ul class="sidebar-menu">
         <li class="sidebar-item">
@@ -11,8 +10,8 @@
             <i class="bi bi-person"></i> Perfiles
           </a>
           <ul class="submenu" v-show="showProfiles">
-            <li><router-link to="/usuarios" class="sidebar-link"> <i class="bi bi-person"></i> Usuarios</router-link></li>
-            <li><router-link to="/roles" class="sidebar-link"> <i class="bi bi-person"></i> Roles</router-link></li>
+            <li class="sidebar-link" @click="tab = 'users'"> <i class="bi bi-person"></i> Usuarios</li>
+            <li class="sidebar-link" @click="tab = 'roles'" ><i class="bi bi-person"></i>Roles</li>
           </ul>
         </li>
         <li class="sidebar-item">
@@ -34,22 +33,27 @@
     </div>
     <div id="adminUsers" class="col" style="margin-left:200px">
       <router-view>
-        <adminUsers></adminUsers>
+        <adminUsers  v-show="tab === 'users'"></adminUsers>
+        <roles v-show="tab === 'roles'"></roles>
       </router-view>
+      
     </div>
   </div>
 </template>
 
 <script>
-import adminUsers from '@/views/adminUsers.vue'
+import adminUsers from './usuarios.vue'
+import roles from './roles.vue'
 export default {
   name: 'Sidebar',
   components: {
-    adminUsers
+    adminUsers,
+    roles
   },
   data() {
     return {
-      showProfiles: false
+      showProfiles: false,
+      tab: 'Panel'
     };
   },
   methods: {

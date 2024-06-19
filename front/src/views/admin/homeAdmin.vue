@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar bg-white shadow-lg" style="z-index: 200; height: 60px">
+    <nav class="navbar bg-white shadow-sm" style="z-index: 200; height: 60px">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
           <img :src="isotipo" alt="isotipo" height="25" class="d-inline-block align-text-top me-2" />
@@ -12,10 +12,10 @@
 
           </li>
           <li class="nav-item">
-            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'"> <strong>Configuraciones</strong></a>
+            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Auditoria' }" href="#" @click="tab = 'Auditoria'"> <strong>Auditoria</strong></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'"> <strong>Auditoria</strong></a>
+            <a class="nav-link" :class="{ 'nav-tab-focus': tab === 'Users' }" href="#" @click="tab = 'Users'"> <strong>Configuraciones</strong></a>
           </li>
           
         </ul>
@@ -31,9 +31,9 @@
       </div>
     </nav>
     <router-view>
-      <adminUsers v-show="tab === 'Panel'"></adminUsers>
+      <dashboard v-show="tab === 'Panel'"></dashboard>
       <administracion v-show="tab === 'Users'"></administracion>
-      <chat v-if="tab === 'chat'"></chat>
+      <auditoria v-show="tab === 'Auditoria'"></auditoria>
     </router-view>
 
   </div>
@@ -44,9 +44,10 @@
 import router from '../../router/routes';
 import logo from '../../assets/img/logo2.jpg';
 import isotipo from '../../assets/img/isotipo.jpg';
-import adminUsers from '@/views/adminUsers.vue';
-import chat from '@/views/chat.vue';
-import administracion from '@/views/administracion.vue'
+import dashboard from './components/dashboard.vue';
+import auditoria from './components/auditoria.vue' 
+
+import administracion from './components/configuracion.vue'
 
 export default {
   data() {
@@ -62,9 +63,9 @@ export default {
   },
   // Cambiado de component a components
   components: {
-    adminUsers,
+    auditoria,
     administracion,
-    chat
+    dashboard
   },
   methods: {
     salir() {

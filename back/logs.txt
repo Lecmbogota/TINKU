@@ -1,0 +1,6 @@
+Mensaje insertado en la base de datos: {
+  id: '573152092535',
+  text: 'Sí, estoy de acuerdo.',
+  time: '08:44 PM',
+  date: '18/06/2024'
+}

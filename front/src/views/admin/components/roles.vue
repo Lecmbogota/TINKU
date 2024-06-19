@@ -1,27 +1,43 @@
 <template>
   <div class="user-admin-panel">
-    <h2>Panel de Usuarios</h2>
+  <div class="d-flex justify-content-between align-content-center  p-2">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
     
+    <li class="breadcrumb-item active" aria-current="page"><a >Configuraciones</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a >Perfiles</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Roles</li>
+  </ol>
+</nav>    
     <!-- Botón para abrir el modal de creación/edición de usuario -->
-    <button class="btn btn-primary mb-4" @click="abrirModal('crear')">Crear Usuario</button>
+    <button class="btn btn-primary btn-circle mb-4 btn-sm fixed-bottom-right" @click="abrirModal('crear')">
+    <i class="bi bi-person-plus-fill"></i>
+</button>
+
+  </div>
 
      <!-- Tabla de usuarios -->
      <table class="table">
       <thead>
         <tr>
-          <th scope="col-1">ID</th>
-          <th scope="col-7">Nombre</th>
-          <th scope="col-3">Acciones</th>
+          <th scope="col"></th>
+          <th scope="col-auto">ID</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Perfil</th>
+          <th scope="col">Conectado</th>
+          <th scope="col">Activo</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(usuario, index) in usuarios" :key="index">
-          <td>{{ usuario.id }}</td>
-          <td>{{ usuario.nombre }}</td>
-          <td>
-            <button @click="editarUsuario(usuario)" class="btn btn-primary btn-sm mx-2">Editar</button>
-
+          <td class="m-0 p-0 fs-6">
+            <button @click="editarUsuario(usuario)" class="btn btn-primary btn-sm mx-2 btn-small">Editar</button>
           </td>
+          <td class="m-0 p-0 fs-6">{{ usuario.id }}</td>
+          <td class="m-0 p-0 fs-6">{{ usuario.nombre }}</td>
+          <td class="m-0 p-0 fs-6">{{ usuario.rol_id }}</td>
+          <td class="m-0 p-0 fs-6">{{ usuario.conectado }}</td>
+          <td class="m-0 p-0 fs-6">{{ usuario.activo }}</td>
         </tr>
       </tbody>
     </table>
@@ -58,7 +74,7 @@
                   <option value="2">Agente</option>
                 </select>                
               </div>
-              <button type="submit" class="btn btn-primary" @click="cerrarModal()" >{{ modoModal === 'crear' ? 'Crear Usuario' : 'Guardar Cambios' }}</button>
+              <button type="submit" class="btn btn-primary btn-sm" @click="cerrarModal()" >{{ modoModal === 'crear' ? 'Crear Usuario' : 'Guardar Cambios' }}</button>
             </form>
           </div>
         </div>
@@ -68,7 +84,7 @@
 </template>
 
 <script>
-import { registerUser, getAllUsers } from '../services/adminServices';
+import { registerUser, getAllUsers } from '../../../services/adminServices';
 
 
 
@@ -181,4 +197,45 @@ export default {
   display: block;
   background-color: rgba(0, 0, 0, 0.7);
 }
+.fixed-bottom-right {
+    position: fixed;
+    bottom: 0px; /* Ajusta la distancia desde el fondo */
+    right: 10px; /* Ajusta la distancia desde la derecha */
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos si es necesario */
+}
+.btn-circle {
+    width: 50px; /* Ajusta el tamaño del botón según sea necesario */
+    height: 50px; /* Ajusta el tamaño del botón según sea necesario */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.btn-circle i {
+    font-size: 1.5rem; /* Ajusta el tamaño del icono según sea necesario */
+}
+
+/* estilos para la tabla */
+td{
+  vertical-align: middle;
+  text-align: start;
+  padding: 0px;
+  margin: 0px;
+}
+th{
+  vertical-align: middle;
+  text-align: start;
+  padding: 0px;
+  margin: 0px;
+
+}
+.btn-small {
+    padding: 2px 6px; /* Ajusta el relleno (padding) según sea necesario */
+    font-size: 10px; /* Ajusta el tamaño de la fuente según sea necesario */
+    line-height: 1.5; /* Ajusta la altura de la línea según sea necesario */
+}
+
+
 </style>
